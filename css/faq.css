@@ -1,0 +1,102 @@
+/**
+ * BC FAQ — structure only.
+ *
+ * Hit targets, focus visibility and the reserved loading height are
+ * load-bearing; colours, type and spacing are placeholders.
+ */
+
+#bc-faq {
+  max-width: var(--bc-max-width);
+  margin: 0 auto;
+}
+
+/* Reserve height before the sheet resolves so the sections below don't jump.
+   Removed by faq.js once the list renders. */
+#bc-faq.is-loading {
+  min-height: 24rem;
+}
+
+.bc-faq__item {
+  border-bottom: 1px solid currentColor;
+}
+
+.bc-faq__heading {
+  margin: 0;
+  font: inherit;
+}
+
+.bc-faq__question {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+
+  width: 100%;
+  min-height: 44px;
+  padding: 1rem 0;
+
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.bc-faq__label {
+  flex: 1;
+}
+
+/* Plus that becomes a minus, drawn from the button's own state so the markup
+   carries no duplicate "open" flag. */
+.bc-faq__icon {
+  position: relative;
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+}
+
+.bc-faq__icon::before,
+.bc-faq__icon::after {
+  content: '';
+  position: absolute;
+  inset: 50% 0 auto 0;
+
+  height: 2px;
+  margin-top: -1px;
+  background: currentColor;
+  transition: transform 0.2s ease;
+}
+
+.bc-faq__icon::after {
+  transform: rotate(90deg);
+}
+
+.bc-faq__question[aria-expanded='true'] .bc-faq__icon::after {
+  transform: rotate(0deg);
+}
+
+/* [hidden] is display:none, so the panel cannot be transitioned. That is the
+   deliberate trade for correct screen-reader and find-in-page behaviour. */
+.bc-faq__answer[hidden] {
+  display: none;
+}
+
+.bc-faq__answer-inner {
+  padding: 0 0 1.5rem;
+}
+
+.bc-faq__answer-inner p {
+  margin: 0 0 1em;
+}
+
+.bc-faq__answer-inner p:last-child {
+  margin-bottom: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bc-faq__icon::before,
+  .bc-faq__icon::after {
+    transition: none;
+  }
+}
