@@ -1,0 +1,42 @@
+/**
+ * BC Base — tokens and shared resets.
+ * Loaded first in the bundle; every component file builds on these.
+ */
+
+:root {
+  --bc-text: #000;
+  --bc-background: #fff;
+  --bc-accent: #000;
+  --bc-max-width: 1400px;
+
+  /* Published by header.js once the bar is measured. The fallback keeps
+     anchors roughly correct before JavaScript runs. */
+  --bc-header-height: 64px;
+}
+
+/* Scope the reset to our own mount points so it never fights Squarespace. */
+.bc-header,
+#bc-calendar,
+#bc-faq,
+#bc-creative {
+  box-sizing: border-box;
+}
+
+.bc-header *,
+#bc-calendar *,
+#bc-faq *,
+#bc-creative * {
+  box-sizing: inherit;
+}
+
+/* Anchor targets must clear the fixed header. Applies to the Squarespace
+   section IDs the nav links to. */
+[id] {
+  scroll-margin-top: var(--bc-header-height);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
