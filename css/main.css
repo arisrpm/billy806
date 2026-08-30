@@ -70,6 +70,15 @@ main {
   background-size: cover;  
   margin: 0;
   padding: 0;  
+  font-family: var(--bc-main-font) !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: var(--bc-main-font) !important;
 }
 
 #about {
@@ -107,7 +116,7 @@ main {
 
 #calendar {
     position: relative;
-    padding: 0;
+    padding: 5rem 0 0;
     margin: 0;
     /* background-image: var(--bc-calendar-top-image); */
     background-position: top center;
@@ -144,6 +153,7 @@ main {
     max-width: 100%;
     margin: 0 auto;
     padding: 0 25px;
+    font-size: "itc-avant-garde-gothic-pro", sans-serif;
 }
 
 .calendar-ending {

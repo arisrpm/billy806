@@ -1,0 +1,6 @@
+.DS_Store
+
+# Intermediates from dev/build.sh. Only the .min.* files are committed —
+# jsDelivr serves those to Squarespace straight out of this repo.
+dist/bc.css
+dist/bc.js
