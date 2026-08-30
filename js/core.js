@@ -30,7 +30,7 @@
     // site's referrers in Google Cloud Console. See notes: the key plus the
     // spreadsheet ID grants read access to EVERY tab in the workbook, so the
     // workbook must contain nothing private.
-    apiKey: 'YOUR_API_KEY',
+    apiKey: 'AIzaSyB2bGN781PqOayJLrn1BDqsnWoPEy-A66A',
 
     // Tab name -> only the columns that tab actually uses. Keep these tight;
     // A:Z fetches 26 columns to use five.
@@ -212,7 +212,14 @@
   const load = () => {
     if (!pending) {
       pending = fetchAll();
-      pending.then(sheets => log('Loaded tabs:', Object.keys(sheets).join(', ')));
+
+      // Two arguments, not .then().catch(): a success-only .then() would spawn
+      // a derived promise whose rejection nobody owns, and the browser reports
+      // that as an uncaught error on top of the ones callers already handle.
+      pending.then(
+        sheets => log('Loaded tabs:', Object.keys(sheets).join(', ')),
+        () => {}
+      );
     }
 
     return pending;

@@ -1,0 +1,312 @@
+/**
+ * BC Calendar — structure only.
+ *
+ * The grid, hit targets, disabled states and stable height are load-bearing;
+ * colours, type and spacing are placeholders for the real design.
+ */
+
+/* The mount point owns its own width — the host page places it. Setting a
+   max-width on the id here would outrank any class the page puts on the same
+   element and force horizontal overflow on narrower screens. */
+
+/* Reserve height before the sheet resolves so the page below does not jump.
+   Removed by calendar.js once the month renders. */
+#bc-calendar.is-loading {
+  min-height: 40vw;
+}
+
+/* ---- month nav ---- */
+
+.bc-calendar__nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: -2em;
+  padding-bottom: 0;
+}
+
+.bc-calendar__month {
+  margin: 0;
+  min-width: 12ch;
+  text-align: center;
+}
+
+.bc-calendar__prev,
+.bc-calendar__next {
+  /* Real disabled buttons, not a class: keyboard users and screen readers get
+     the state for free, and a disabled button cannot be clicked at all. */
+  width: 44px;
+  height: 44px;
+  padding: 0;
+
+  background: none;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+}
+
+.bc-calendar__prev::before,
+.bc-calendar__next::before {
+  content: '';
+  display: block;
+  width: 14px;
+  height: 14px;
+  margin: 0 auto;
+  border-top: 3px solid currentColor;
+  border-right: 3px solid currentColor;
+}
+
+.bc-calendar__prev::before { transform: rotate(-135deg); }
+.bc-calendar__next::before { transform: rotate(45deg); }
+
+.bc-calendar__prev:disabled,
+.bc-calendar__next:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+
+/* ---- grid ---- */
+
+.bc-calendar__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+
+  /* Weekday strip sizes to its text; every day row after it shares height
+     equally, so a cell with two showtimes does not make its row taller than
+     the rest. grid-auto-rows rather than a fixed count, so a five-row month
+     draws five rows and not a dead sixth. */
+  grid-template-rows: auto;
+  grid-auto-rows: 1fr;
+
+  /* One continuous rule everywhere: the grid draws the top and left edges,
+     each cell draws its right and bottom. Borders on all four sides of every
+     cell would double up to 2px on every shared line. */
+  border-top: 1px solid var(--bc-text);
+  border-left: 1px solid var(--bc-text);
+}
+
+.bc-calendar__weekday,
+.bc-calendar__day {
+  border-right: 1px solid var(--bc-text);
+  border-bottom: 1px solid var(--bc-text);
+}
+
+.bc-calendar__weekday {
+  padding: 0.5rem;
+  text-align: center;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* Full names by default; the short form takes over once seven columns can no
+   longer hold "Wednesday". Adjust the breakpoint to taste — both strings are
+   always in the markup, so only this rule decides. */
+.bc-calendar__weekday-short {
+  display: none;
+}
+
+@media (max-width: 990px) {
+  .bc-calendar__weekday-full {
+    display: none;
+  }
+
+  .bc-calendar__weekday-short {
+    display: inline;
+  }
+}
+
+.bc-calendar__day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+
+  /* Square-ish cells keep all six rows the same height whatever the month. */
+  min-height: 6rem;
+  padding: 0.5rem;
+}
+
+.bc-calendar__date {
+  font-weight: 700;
+  width: 100%;
+  text-align: left;
+}
+
+/* A day outside the month, used only to pad the grid. It keeps its border so
+   the grid reads as one unbroken block. */
+.bc-calendar__day.is-empty .bc-calendar__date {
+  visibility: hidden;
+}
+
+/* Fade the contents, never the cell. Dimming the whole cell would take its
+   border with it and leave the grid lines uneven. */
+.bc-calendar__day.is-dark .bc-calendar__date,
+.bc-calendar__day.is-past .bc-calendar__date {
+  opacity: 0.35;
+}
+
+.bc-calendar__day.is-past .bc-calendar__times {
+  opacity: 0.35;
+}
+
+.bc-calendar__day.is-today {
+  outline: 2px solid var(--bc-accent);
+  outline-offset: -2px;
+}
+
+/* ---- performances ---- */
+
+.bc-calendar__times {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+
+  width: 100%;
+  margin: 0 0 10px;
+  padding: 0;
+  list-style: none;
+}
+
+.bc-calendar__link {
+  display: block;
+  padding: 0.35rem 0.25rem;
+  font-size: 20px;
+  color: inherit;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+/* The filled block is the Best Available marker — the only showtime that gets
+   a background. The legend swatch below must stay in step with this rule. */
+.bc-calendar__performance.is-best-available .bc-calendar__link {
+  background: var(--bc-accent);
+  color: var(--bc-background);
+}
+
+/* ---- legend ---- */
+
+.bc-calendar__legend {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+
+  margin: 0.5rem 0 1.5rem;
+  text-align: center;
+}
+
+.bc-calendar__legend[hidden] {
+  display: none;
+}
+
+.bc-calendar__swatch {
+  display: inline-block;
+  width: 3rem;
+  height: 1.5rem;
+  background: var(--bc-accent);
+}
+
+/* Available to screen readers, invisible on screen. */
+.bc-calendar__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------------ *
+ * Narrow screens
+ * ------------------------------------------------------------------ */
+
+/* Between the two breakpoints the grid survives, just tighter. */
+@media (max-width: 900px) {
+  .bc-calendar__day {
+    min-height: 4.5rem;
+    padding: 0.25rem;
+    font-size: 0.875rem;
+  }
+
+  .bc-calendar__link {
+    padding: 0.25rem 0.125rem;
+  }
+
+  .bc-calendar__legend {
+    flex-wrap: wrap;
+  }
+}
+
+/* ---- list view (rendered by calendar.js below CONFIG.listBelow) ---- */
+
+.bc-calendar__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  border-top: 1px solid var(--bc-text);
+}
+
+.bc-calendar__list-day {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--bc-text);
+}
+
+.bc-calendar__list-date {
+  display: flex;
+  flex-direction: column;
+
+  /* Fixed column so every row's showtimes line up down the page. */
+  flex: 0 0 5rem;
+  text-align: left;
+}
+
+.bc-calendar__list-weekday {
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+
+.bc-calendar__list-date time {
+  font-weight: 700;
+}
+
+.bc-calendar__list-day .bc-calendar__times {
+  flex: 1;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.bc-calendar__list-day .bc-calendar__performance {
+  flex: 1 1 8rem;
+}
+
+/* Full-size tap targets — the whole point of the list. */
+.bc-calendar__list-day .bc-calendar__link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 44px;
+  padding: 0.5rem 0.75rem;
+
+  border: 1px solid var(--bc-text);
+}
+
+.bc-calendar__list-day.is-past {
+  opacity: 0.35;
+}
+
+.bc-calendar__empty {
+  padding: 2rem 0;
+  text-align: center;
+}

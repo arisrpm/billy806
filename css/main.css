@@ -4,9 +4,15 @@
  */
 
 :root {
-  --bc-text: #000;
+  --bc-main-font: "itc-avant-garde-gothic-pro", sans-serif;
+
+  /* One brand colour, named for what it is, so the role tokens below can be
+     honest about theirs. */
+  --bc-navy: #062449;
+
+  --bc-text: var(--bc-navy);
   --bc-background: #fff;
-  --bc-accent: #000;
+  --bc-accent: var(--bc-navy);
   --bc-max-width: 1400px;
 
   /* Published by header.js once the bar is measured. The fallback keeps
@@ -38,5 +44,122 @@
 @media (prefers-reduced-motion: no-preference) {
   html {
     scroll-behavior: smooth;
+  }
+}
+
+p {
+  margin-top: 0;
+}
+
+p:last-child {
+  margin-bottom: 0;
+}
+
+main {
+  background-image: url(../img/bc-initial-bg.jpg);
+  background-position: top center;
+  background-repeat: no-repeat;
+  background-size: cover;  
+  margin: 0;
+  padding: 5rem 0 0;  
+}
+
+#about {
+    padding: 4rem 1.25rem;
+    background: #fff;
+    position: relative;
+    box-shadow: 0px 20px 20px 0px rgb(0 0 0 / 19%);
+}
+
+#about .container {
+    text-align: center;
+    margin: 0 auto;
+    max-width: 100%;
+    width: 1380px;
+}
+
+#about .container h2 {
+    margin: 0 0 2rem;
+    padding: 0;
+    font-size: 2.5rem;
+}
+
+#about .container h5 {
+    margin: 0;
+    padding: 0;
+    font-size: 2rem;
+}
+
+#about .container p {
+    max-width: 100%;
+    width: 1180px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#calendar {
+    position: relative;
+    padding: 0;
+    margin: 0;
+    /* background-image: url(../img/bc-calendar-top.png); */
+    background-position: top center;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    min-height: 60vh;
+}
+
+/* #calendar:after {
+    content: '';
+    background: #fff;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+} */
+
+#calendar .container {
+    text-align: center;
+    margin: 0 auto;
+    max-width: 100%;
+    width: 100%;
+    background: #fff;
+}
+
+#calendar h2 {
+    margin: 0;
+    padding: 0;
+    line-height: 1.2;
+    font-size: 5rem;
+}
+
+.dev-calendar {
+    width: 1400px;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0 25px;
+}
+
+.calendar-ending {
+    width: 660px;
+    max-width: 100%;
+    text-align: center;
+    padding: 0 25px;
+    margin: 3rem auto 0;
+}
+
+
+@media (max-width: 767px) {
+    .calendar-ending {
+        width: 425px;
+        padding: 0;
+    }
+    .calendar-ending span {
+        display: block;
+        font-size: 0px;
+    }
+}
+
+@media (max-width: 640px) {
+  .calendar-ending p {
+      font-size: 18px;
   }
 }

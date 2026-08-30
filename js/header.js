@@ -42,6 +42,26 @@
    * Menu
    * ------------------------------------------------------------------ */
 
+  /**
+   * Only offer nav items whose section is actually on the page. The site grows
+   * a section at a time, and a link to a section that does not exist is a dead
+   * link the visitor can click. Items reappear on their own once the matching
+   * id shows up, so NAV stays the single list to maintain.
+   */
+  const availableNav = () => {
+    const present = NAV.filter(item => document.getElementById(item.href.slice(1)));
+
+    if (BC.config.debug && present.length !== NAV.length) {
+      const missing = NAV.filter(item => !present.includes(item)).map(item => item.href);
+      console.warn(
+        `${MODULE} Nav items hidden, no matching section on the page:`,
+        missing.join(', ')
+      );
+    }
+
+    return present;
+  };
+
   const buildPanel = () => {
     const nav = document.createElement('nav');
 
@@ -50,7 +70,7 @@
     nav.hidden = true;
     nav.setAttribute('aria-label', 'Main');
 
-    const items = NAV.map(
+    const items = availableNav().map(
       item => `
         <li class="bc-header__nav-item">
           <a class="bc-header__link" href="${BC.esc(item.href)}">
@@ -118,10 +138,62 @@
     document.addEventListener('click', event => {
       if (isOpen() && !header.contains(event.target)) setOpen(false);
     });
+  };
 
-    // Jumping to a section should not leave the panel covering it.
-    panel.addEventListener('click', event => {
-      if (event.target.closest('a[href^="#"]')) setOpen(false);
+  /* ------------------------------------------------------------------ *
+   * Anchors
+   * ------------------------------------------------------------------ */
+
+  const prefersReducedMotion = () =>
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /**
+   * Scroll to a section without writing #id into the address bar.
+   *
+   * The default anchor behaviour appends the fragment and pushes a history
+   * entry; scrolling by hand keeps the URL clean. scroll-margin-top on the
+   * target still keeps it clear of the sticky bar.
+   *
+   * Returns false when there is nothing to scroll to, so the caller can let
+   * the browser handle it normally.
+   */
+  const scrollToTarget = href => {
+    const id = (href || '').slice(1);
+    const target = id && document.getElementById(id);
+
+    if (!target) return false;
+
+    target.scrollIntoView({
+      behavior: prefersReducedMotion() ? 'auto' : 'smooth',
+      block: 'start',
+    });
+
+    // Move keyboard and screen-reader users along with the visual jump.
+    if (!target.hasAttribute('tabindex')) {
+      target.setAttribute('tabindex', '-1');
+    }
+
+    target.focus({ preventScroll: true });
+
+    return true;
+  };
+
+  const bindAnchors = () => {
+    header.addEventListener('click', event => {
+      const link = event.target.closest('a[href^="#"]');
+
+      if (!link || !header.contains(link)) return;
+
+      // Always prevent, never conditionally. A bare "#", or a link whose
+      // section has not been built yet, would otherwise fall through to the
+      // browser and write the fragment into the address bar.
+      event.preventDefault();
+
+      // Close first: setOpen(false) restores focus to the toggle, which would
+      // otherwise undo the focus move onto the target section.
+      if (toggle && isOpen()) setOpen(false);
+
+      scrollToTarget(link.getAttribute('href'));
     });
   };
 
@@ -135,6 +207,32 @@
       '--bc-header-height',
       `${header.offsetHeight}px`
     );
+  };
+
+  /**
+   * position: sticky fails silently when any ancestor establishes a scroll
+   * container. Squarespace templates set overflow-x on wrappers often enough
+   * that this is worth catching locally rather than on the live site.
+   *
+   * overflow: clip is fine — it does not create a scroll container.
+   */
+  const warnIfStickyBroken = () => {
+    if (!BC.config.debug) return;
+    if (getComputedStyle(header).position !== 'sticky') return;
+
+    for (let node = header.parentElement; node; node = node.parentElement) {
+      const style = getComputedStyle(node);
+      const values = [style.overflow, style.overflowX, style.overflowY];
+
+      if (values.some(value => value && !['visible', 'clip'].includes(value))) {
+        console.warn(
+          `${MODULE} position: sticky is being blocked by an ancestor with ` +
+            `overflow ${style.overflowX}/${style.overflowY}.`,
+          node
+        );
+        return;
+      }
+    }
   };
 
   const bindMeasure = () => {
@@ -191,6 +289,16 @@
       return;
     }
 
+    // "#" is a placeholder the sheet is entitled to hold. It is applied as
+    // authored — bindAnchors keeps it out of the address bar — but say so
+    // while debugging, so it cannot ship unnoticed.
+    if (url === '#' && BC.config.debug) {
+      console.warn(
+        `${MODULE} BUTTON URL is still the placeholder "#" — the ticket ` +
+          'button will not go anywhere.'
+      );
+    }
+
     button.textContent = buttonText;
     button.href = url;
     button.hidden = false;
@@ -233,7 +341,9 @@
       bindMenu();
     }
 
+    bindAnchors();
     bindMeasure();
+    warnIfStickyBroken();
 
     // Everything above works offline. Only the copy below needs the network,
     // and the markup already renders a usable header without it.
