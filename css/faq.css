@@ -167,7 +167,6 @@
   display: grid;
   grid-template-rows: 0fr;
   transition: grid-template-rows 0.35s ease;
-  padding-top: 5rem;
   background: #fff;
 }
 
@@ -180,6 +179,7 @@
 
 .bc-faq__panel.is-open {
   grid-template-rows: 1fr;
+  padding: 6rem 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
