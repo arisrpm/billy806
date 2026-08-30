@@ -100,3 +100,126 @@
     transition: none;
   }
 }
+
+/* ------------------------------------------------------------------ *
+ * Outer disclosure — the plate, and the panel it reveals
+ * ------------------------------------------------------------------ */
+
+.bc-faq {
+  --bc-faq-bg: url(https://images.squarespace-cdn.com/content/69ced95badea255402fe4b3b/4e9e4fc3-dc8b-49df-9d1c-31be38d3ef0c/bc-faq-bg.png);
+
+  /* Anchored to the bottom: the paper stack and wood stay put while the white
+     panel grows upward out of them. */
+  background-image: var(--bc-faq-bg);
+  background-position: bottom center;
+  background-repeat: no-repeat;
+  background-size: 100% auto;
+  padding: 5rem 0;
+
+  /* Column order is reversed against the DOM on purpose. The button comes
+     first in markup so a screen reader meets the control before the content
+     it opens; visually the buckle belongs underneath, and gets pushed down as
+     the panel grows. */
+  display: flex;
+  flex-direction: column;
+}
+
+.bc-faq__toggle {
+  order: 2;
+
+  display: block;
+  width: 100%;
+  padding: 0;
+
+  background: none;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+}
+
+.bc-faq__toggle img {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  height: 200px;
+}
+
+.bc-faq__panel {
+  order: 1;
+}
+
+/* The plate is the visible label; this is here so the button is announced. */
+.bc-faq__toggle-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Collapsed to zero rows and expanded to one. Animating grid-template-rows is
+   what makes a slide possible at all — height:auto cannot be transitioned, and
+   a fixed max-height guesses at the content. */
+.bc-faq__panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.35s ease;
+  padding-top: 5rem;
+  background: #fff;
+}
+
+/* Exactly one child, created by faq.js. Its overflow is what hides the content
+   while the row above it collapses to zero. */
+.bc-faq__panel-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.bc-faq__panel.is-open {
+  grid-template-rows: 1fr;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bc-faq__panel {
+    transition: none;
+  }
+}
+
+.bc-faq__title {
+  font-size: 4rem;
+  margin: 0 0 1.5rem;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+/* ------------------------------------------------------------------ *
+ * Open row
+ * ------------------------------------------------------------------ */
+
+/* The whole row goes navy when open — question and answer together — rather
+   than just the button, which is why this keys off the item and not the
+   button itself. */
+/* Every descendant, and !important, both deliberately.
+   The question sits inside an <h3>, and main.css sets
+   `h2, h3, … { color: var(--bc-text) !important }` to win against the
+   Squarespace theme. !important beats any specificity, so neither inheritance
+   from the item nor a * selector could turn that heading white — the question
+   was rendering navy on navy and disappearing. Matching the !important is the
+   only thing that wins here. */
+.bc-faq__item:has(.bc-faq__question[aria-expanded='true']),
+.bc-faq__item:has(.bc-faq__question[aria-expanded='true']) * {
+  color: #fff !important;
+}
+
+.bc-faq__item:has(.bc-faq__question[aria-expanded='true']) {
+  background: var(--bc-navy, #062449);
+}
+
+.bc-faq__item:has(.bc-faq__question[aria-expanded='true']) .bc-faq__question,
+.bc-faq__item:has(.bc-faq__question[aria-expanded='true']) .bc-faq__answer-inner {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}

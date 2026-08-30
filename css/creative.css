@@ -148,10 +148,11 @@
   font-weight: 700;
   text-transform: uppercase;
   line-height: 1.05;
+  color: #fff !important;
 }
 
 .bc-creative__role {
-  margin: 0 0 1.5em;
+  margin: 0 0 15px;
   font-size: clamp(1.125rem, 2vw, 1.5rem);
 }
 
@@ -161,6 +162,7 @@
 
 .bc-creative__bio p {
   margin: 0 0 1em;
+  font-size: 18px;
 }
 
 .bc-creative__bio p:last-child {
