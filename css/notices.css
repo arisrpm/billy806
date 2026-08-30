@@ -1,0 +1,173 @@
+/**
+ * BC Notices — the standing information notes (previews date, phone-free
+ * policy) on the wood panel.
+ *
+ * Static content: no module, no sheet tab, no JavaScript. The markup lives in
+ * a Squarespace Code Block; everything here is presentation.
+ *
+ * Tokens are scoped to the component rather than :root, so tuning the paper
+ * colour or the tilt never reaches the rest of the site.
+ */
+
+.bc-notices {
+  --bc-note-bg: #fbe122;
+  --bc-note-ink: var(--bc-navy, #062449);
+  --bc-note-shadow: 0 14px 28px rgb(0 0 0 / 35%);
+
+  /* How far the angled note rises above the section, to tuck behind whatever
+     sits above it. */
+  --bc-note-lift: clamp(1.5rem, 4vw, 3.5rem);
+
+  /* How far the angled note laps over the flat one. The inner flex has no
+     column gap, so this is the overlap in actual pixels. */
+  --bc-note-overlap: clamp(1rem, 3vw, 2.5rem);
+
+  /* Transparent. The wood is the Squarespace SECTION background — painting
+     anything here would cover it. The hook stays for the case where the image
+     has to come from our CSS instead; it paints nothing until it is set. */
+  --bc-notices-image: none;
+
+  background-image: var(--bc-notices-image);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+
+  /* No top padding: the notes sit flush to the seam with the section above,
+     and the angled note's corner is meant to bleed over it. */
+  padding: 0 1.25rem clamp(2rem, 6vw, 5rem);
+
+  /* The notes are rotated, so their corners swing past their layout box.
+     Contained HERE and never on body or html — an overflow on an ancestor of
+     the header silently stops position: sticky from working.
+
+     clip, not hidden: overflow-x:hidden forces overflow-y to compute as auto,
+     which would make this a scroll container and cut off the corner bleeding
+     upward. hidden stays first as the fallback for anything without clip. */
+  overflow-x: hidden;
+  overflow-x: clip;
+
+  /* THE reason a z-index on the date note is safe.
+     This makes the section its own stacking context, so any z-index inside it
+     is resolved among the notes and cannot escape to compete with #calendar
+     above. Without it, raising the note far enough to cover its neighbour also
+     raises it over the white calendar — the note wins at the root level.
+     With it, the note can be z-index: 999 and the section as a whole still
+     sits under the calendar. */
+  isolation: isolate;
+}
+
+.bc-notices__inner {
+  display: flex;
+  /* Top-aligned, so lifting one note moves only that note. */
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0;
+
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+/* ---- the paper ---- */
+
+.bc-notice {
+  transform: rotate(var(--bc-note-rotate, 0deg));
+
+  padding: clamp(1.25rem, 3vw, 2rem) clamp(1.5rem, 3vw, 2.5rem);
+
+  background: var(--bc-note-bg);
+  color: var(--bc-note-ink);
+  box-shadow: var(--bc-note-shadow);
+  margin-left: 2rem;
+}
+
+/* ---- date note ---- */
+
+.bc-notice--date {
+  --bc-note-rotate: -4deg;
+
+  /* Rises above the section edge and slides under the section above, so it
+     reads as a note stuck on top of the page rather than laid out in it. */
+  margin-top: calc(var(--bc-note-lift) * -1);
+
+  /* Laps over the flat note. Safe only because .bc-notices isolates — see the
+     note there before changing either value. */
+  position: relative;
+  z-index: 1;
+  margin-right: calc(var(--bc-note-overlap) * -1);
+
+  flex: 0 1 auto;
+  text-align: center;
+  padding-top: 7rem;
+  padding-bottom: 5rem;
+}
+
+.bc-notice__date {
+  display: flex;
+  flex-direction: column;
+
+  margin: 0;
+  font-style: italic;
+  font-weight: 700;
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.bc-notice__date-lead {
+  font-size: clamp(1.5rem, 3.5vw, 2.75rem);
+}
+
+.bc-notice__date-main {
+  font-size: clamp(3rem, 8vw, 6rem);
+}
+
+/* ---- information note ---- */
+
+/* Sits flat. The angle belongs to the date note — two tilts competing reads
+   as sloppy rather than deliberate. */
+.bc-notice--info {
+  --bc-note-rotate: 0deg;
+
+  flex: 0 1 27rem;
+}
+
+.bc-notice__heading {
+  margin: 0 0 0.5em;
+  font-size: clamp(1.125rem, 2vw, 1.5rem);
+  font-weight: 700;
+}
+
+.bc-notice__body {
+  margin: 0;
+  font-size: clamp(0.95rem, 1.5vw, 1.25rem);
+  line-height: 1.35;
+}
+
+.bc-notice__link {
+  color: inherit;
+  text-decoration: underline;
+}
+
+/* ---- narrow screens ---- */
+
+@media (max-width: 900px) {
+  .bc-notices__inner {
+    flex-direction: column;
+  }
+
+  /* A few degrees costs far more width on a full-bleed phone note than it
+     does in a side-by-side row, so ease off rather than stack them askew. */
+  .bc-notice--date {
+    --bc-note-rotate: -2deg;
+    margin-right: 0;
+  }
+
+  .bc-notice--info {
+    flex: 1 1 auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bc-notice {
+    transform: none;
+  }
+}

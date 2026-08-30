@@ -119,6 +119,10 @@ h5 {
 
 #calendar {
     position: relative;
+    /* The notices section that follows lifts its angled note up behind this
+       one. Later siblings paint on top by default, so the calendar has to be
+       raised for the note to tuck underneath instead of over. */
+    z-index: 1;
     padding: 5rem 0 0;
     margin: 0;
     /* background-image: var(--bc-calendar-top-image); */
