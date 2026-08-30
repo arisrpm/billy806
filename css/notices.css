@@ -78,6 +78,7 @@
   color: var(--bc-note-ink);
   box-shadow: var(--bc-note-shadow);
   margin-left: 2rem;
+  margin-top: -10px;
 }
 
 /* ---- date note ---- */
@@ -126,7 +127,7 @@
    as sloppy rather than deliberate. */
 .bc-notice--info {
   --bc-note-rotate: 0deg;
-
+  padding: 3rem 3rem 4rem;
   flex: 0 1 27rem;
 }
 
@@ -145,6 +146,68 @@
 .bc-notice__link {
   color: inherit;
   text-decoration: underline;
+}
+
+
+.bc-location {
+    position: relative;
+}
+
+.bc-location__inner {
+    position: relative;
+    max-width: 100%;
+    width: 850px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: row;
+    gap: 5rem;
+    align-items: stretch;
+}
+
+.bc-location #mapContainer {
+    width: 100%;
+    position: relative;
+    padding-bottom: 100%;
+    height: 0;
+}
+
+.bc-location #mapContainer iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.bc-location__inner > div {
+    background: #fbe122;
+    padding: 1rem;
+    text-align: center;
+    flex-basis: calc(50% - (15px));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.bc-location__inner p {
+    margin-bottom: 0;
+}
+
+.bc-location a {
+    font-family: var(--bc-main-font);
+    grid-column: 3;
+    justify-self: end;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 1.25rem;
+    background: var(--bc-accent);
+    color: var(--bc-background);
+    text-decoration: none;
+    white-space: nowrap;
+    font-weight: bold;
+    font-size: 20px;
 }
 
 /* ---- narrow screens ---- */

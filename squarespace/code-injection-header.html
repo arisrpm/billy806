@@ -1,0 +1,95 @@
+<!-- ==========================================================================
+     Squarespace → Settings → Advanced → Code Injection → HEADER
+     Paste this entire block. Nothing goes in the FOOTER field.
+
+     Order matters. Squarespace drops this into <head>, and the browser closes
+     <head> the moment it hits the <header> element below — so every <link> and
+     <script> has to come first, and the markup has to come last.
+     ========================================================================== -->
+
+<!-- Open the sockets before anything needs them. The Sheets request is the
+     first thing the JS does, so its DNS + TLS is on the critical path. -->
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://use.typekit.net" crossorigin>
+<link rel="preconnect" href="https://sheets.googleapis.com" crossorigin>
+
+<link rel="stylesheet" href="https://use.typekit.net/atx1qcw.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/arisrpm/billy806@main/dist/bc.min.css">
+
+<!-- In <head> with defer, not in the footer: the download starts immediately
+     and alongside HTML parsing, but execution still waits until the DOM is
+     ready. A footer script cannot start downloading until the parser reaches
+     the bottom of the page. -->
+<script defer src="https://cdn.jsdelivr.net/gh/arisrpm/billy806@main/dist/bc.min.js"></script>
+
+<!-- Artwork is uploaded to Squarespace, so its URLs are not known until then.
+     Paste them here and they override the repo's local dev paths. Drop this
+     block entirely once the URLs are written into css/main.css instead. -->
+<style>
+  :root {
+    --bc-hero-image: url(https://images.squarespace-cdn.com/.../bc-initial-bg.jpg);
+    --bc-calendar-top-image: url(https://images.squarespace-cdn.com/.../bc-calendar-top.png);
+  }
+</style>
+
+<!-- The header bar ships as markup, not a Code Block, for two reasons:
+     1. A Code Block renders inside a Squarespace section wrapper, which makes
+        position: sticky unreliable.
+     2. As markup it paints with the page — no layout shift, and GET TICKETS
+        works even if the JS or the Sheets request never arrives.
+
+     The label and href below are ONLY the fallback. header.js replaces both
+     from the Header sheet tab about 200ms after load, so the sheet is the
+     source of truth in every normal page view.
+
+     Keep this text matching BUTTON TEXT in the sheet. If they differ, every
+     visitor sees this one for ~200ms and then watches it change. This is the
+     one manual sync point in the setup — re-check it whenever the client
+     edits that cell. -->
+<header class="bc-header">
+
+  <button
+    class="bc-header__menu"
+    type="button"
+    aria-label="Open menu"
+    aria-expanded="false"
+  >
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <div class="bc-header__cta" hidden></div>
+
+  <a class="bc-header__tickets" href="#calendar">
+    GET TICKETS NOW
+  </a>
+
+</header>
+
+
+<!-- ==========================================================================
+     MOUNT POINTS — one Code Block per section, on the page itself:
+
+       <div id="bc-calendar" class="is-loading"></div>
+       <div id="bc-faq" class="is-loading"></div>
+
+     The is-loading class reserves height so the page does not jump while the
+     sheet resolves. The modules remove it once they render.
+
+
+     CACHE — @main is served from jsDelivr's edge for up to 12 hours, so a new
+     commit does NOT appear straight away. A ?v=2 query does not fix that: it
+     busts the browser, not jsDelivr. Purge explicitly instead:
+
+       curl https://purge.jsdelivr.net/gh/arisrpm/billy806@main/dist/bc.min.js
+       curl https://purge.jsdelivr.net/gh/arisrpm/billy806@main/dist/bc.min.css
+
+
+     LAUNCH — replace @main with the launch commit (or a tag) in all three
+     URLs above. Pinned assets are immutable, cached hard, and roll back by
+     putting the previous hash back:
+
+       @8f29abc/dist/bc.min.css
+       @8f29abc/dist/bc.min.js
+     ========================================================================== -->

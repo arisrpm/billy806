@@ -1,0 +1,47 @@
+<!-- ==========================================================================
+     Squarespace → the information section → Code Block
+     Place this section AFTER the calendar.
+
+     Static content. No JavaScript, no Google Sheet — the styling ships in
+     bc.min.css and this markup is the whole component.
+
+     The wood is best set as the Squarespace SECTION background. If you would
+     rather it came from our CSS, drop this next to the block instead:
+
+       <style>
+         .bc-notices { --bc-notices-image: url(https://images.squarespace-cdn.com/.../wood.jpg); }
+       </style>
+
+     "PREVIEWS BEGIN OCT 1" is the one line here with a shelf life — it becomes
+     NOW PLAYING, then FINAL WEEKS. Edit it in this block when it changes.
+     ========================================================================== -->
+
+<section class="bc-notices">
+  <div class="bc-notices__inner">
+
+    <div class="bc-notice bc-notice--date">
+      <p class="bc-notice__date">
+        <span class="bc-notice__date-lead">Previews Begin</span>
+        <span class="bc-notice__date-main">Oct 1</span>
+      </p>
+    </div>
+
+    <div class="bc-notice bc-notice--info">
+      <h2 class="bc-notice__heading">Phone-Free Space</h2>
+      <p class="bc-notice__body">
+        To create a respectful theatrical experience for the performer and all
+        audience members, all phones are placed in Yondr cases by Imperial
+        Theatre staff and will be unlocked at the end of the show. Guests
+        maintain possession of their devices at all times. For more
+        information, please visit
+        <a
+          class="bc-notice__link"
+          href="https://overyondr.com/faq"
+          target="_blank"
+          rel="noopener noreferrer"
+        >overyondr.com/faq</a>.
+      </p>
+    </div>
+
+  </div>
+</section>

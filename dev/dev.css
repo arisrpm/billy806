@@ -1,0 +1,82 @@
+/**
+ * Dev harness chrome only. Everything here is scoped to .dev-* so it can
+ * never influence what you are actually styling.
+ */
+
+.dev-bar {
+  position: fixed;
+  inset: auto auto 0 0;
+  z-index: 100000;
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+
+  max-width: 100%;
+  padding: 0.5rem 0.75rem;
+
+  background: #111;
+  color: #fff;
+  font: 500 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: 0.04em;
+}
+
+.dev-bar__badge {
+  padding: 0.35rem 0.5rem;
+  border-radius: 2px;
+  color: #111;
+}
+
+.dev-bar__badge--mock { background: #ffd166; }
+.dev-bar__badge--live { background: #06d6a0; }
+
+.dev-bar__group {
+  display: flex;
+  gap: 0.25rem;
+  padding-left: 0.5rem;
+  border-left: 1px solid #333;
+}
+
+.dev-bar__link {
+  padding: 0.35rem 0.5rem;
+  border-radius: 2px;
+  background: #222;
+  color: #aaa;
+  text-decoration: none;
+}
+
+.dev-bar__link:hover { background: #333; color: #fff; }
+.dev-bar__link.is-active { background: #fff; color: #111; }
+
+.dev-bar__note {
+  padding-left: 0.5rem;
+  border-left: 1px solid #333;
+  color: #777;
+}
+
+/* Rough stand-ins for Squarespace section furniture, so spacing and scroll
+   behaviour are testable. Not part of the production CSS. */
+.dev-section {
+  min-height: 60vh;
+  padding: 4rem 1.25rem;
+  border-bottom: 1px dashed #ccc;
+}
+
+.dev-section > h2 {
+  max-width: var(--bc-max-width);
+  margin: 0 auto 2rem;
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.dev-hero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  background: #f4f4f4;
+  font-size: clamp(2rem, 6vw, 4rem);
+  text-transform: uppercase;
+}

@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Billy Crystal 860 — local dev</title>
+
+<!--
+  LOCAL DEVELOPMENT ONLY. This file is never uploaded to Squarespace.
+
+  It loads the individual source files rather than dist/, so edits to any
+  css/ or js/ file show up on a plain refresh with no build step.
+
+  Run it from a local server (fetch does not work over file://):
+
+      python3 -m http.server 8000
+
+  then open http://localhost:8000
+
+  Data source and CSS scenarios are switchable from the bar at the bottom.
+  See dev/harness.js for the query parameters.
+
+  The markup between the BEGIN/END comments below is the real thing — keep it
+  identical to squarespace/code-injection-header.html.
+-->
+<link rel="stylesheet" href="https://use.typekit.net/atx1qcw.css">
+<!-- Production CSS, in bundle order. -->
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/header.css">
+<link rel="stylesheet" href="css/notices.css">
+<link rel="stylesheet" href="css/calendar.css">
+<link rel="stylesheet" href="css/faq.css">
+
+<!-- Dev chrome. Not bundled. -->
+
+
+<style>
+  /* Squarespace supplies these on the real site. Approximated here only so
+     the page is not unstyled; nothing below belongs in the bundle. */
+  body {
+    font-family: var(--bc-main-font);
+    margin: 0;
+    padding: 0;
+    font-size: 24px;
+    color: var(--bc-text);
+  }
+  img {
+    max-width: 100%;
+    display: block;
+    margin: 0;
+    padding: 0;
+  }
+  main {
+    min-height: 400vh;
+  }
+</style>
+</head>
+
+<body>
+
+<!-- BEGIN header — mirrors squarespace/code-injection-header.html -->
+<header class="bc-header">
+
+  <button
+    class="bc-header__menu"
+    type="button"
+    aria-label="Open menu"
+    aria-expanded="false"
+  >
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <div class="bc-header__cta" hidden></div>
+
+  <a class="bc-header__tickets" href="#calendar">
+    GET TICKETS NOW
+  </a>
+
+</header>
+<!-- END header -->
+
+<div class="dev-hero">Billy Crystal 860</div>
+
+<section class="dev-section" id="about">
+  <div class="container">
+    <h2>ON BROADWAY FOR A LIMITED 14-WEEK ENGAGEMENT</h2>
+    <h5>Home is more than a street number..</h5>
+    <p>In the aftermath of the Palisades fires that took his home, Billy relives his memories and moments that mattered the most, and reflects on how the power of laughter can overcome even the hardest of times. 860 is a hilarious and intimate story about family, friendship, love, luck, and loss.</p>
+    <p>Directed by Tony Award nominee Scott Ellis.</p>
+  </div>
+</section>
+
+<main>
+
+
+  <section class="dev-section" id="calendar">
+    <img class="dev-calendar-bg" src="img/bc-calendar-top.png" alt="">
+    <div class="container">
+      <div class="dev-calendar is-loading" id="bc-calendar"></div>
+      <div class="calendar-ending">
+        <p><strong>BOX OFFICE TICKETS<br>Imperial Theatre <span>•</span> 249 W 45th St, New York, NY 10036</strong></p>
+      </div>
+    </div>
+
+    <img class="dev-calendar-bg" src="img/bc-calendar-bottom.png" alt="">
+  </section>
+
+<section class="bc-notices">
+  <div class="bc-notices__inner">
+
+    <div class="bc-notice bc-notice--date">
+      <p class="bc-notice__date">
+        <span class="bc-notice__date-lead">Previews Begin</span>
+        <span class="bc-notice__date-main">Oct 1</span>
+      </p>
+    </div>
+
+    <div class="bc-notice bc-notice--info">
+      <h2 class="bc-notice__heading">Phone-Free Space</h2>
+      <p class="bc-notice__body">
+        To create a respectful theatrical experience for the performer and all
+        audience members, all phones are placed in Yondr cases by Imperial
+        Theatre staff and will be unlocked at the end of the show. Guests
+        maintain possession of their devices at all times. For more
+        information, please visit
+        <a
+          class="bc-notice__link"
+          href="https://overyondr.com/faq"
+          target="_blank"
+          rel="noopener noreferrer"
+        >overyondr.com/faq</a>.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<section class="bc-location">
+  <div class="bc-location__inner">
+    <div>
+      <div id="mapContainer"><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.137767661187!2d-73.98995202302548!3d40.75899453473575!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c2585442b83233%3A0xc8c6ebc18ac7fb43!2sImperial%20Theatre!5e0!3m2!1sen!2sus!4v1788115222035!5m2!1sen!2sus" width="100%" height="180" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe></div>
+    </div>
+    <div>
+        <p><strong>Box Office Hours:</strong><br>TBD<br><strong>GROUP TICKETS (10+)<br>Click here or call</strong><br>866.302.0995<br><br><strong>Broadway Inbound</strong></p>
+        <a href="#" target="_blank" rel="noopener noreferrer">GET GROUP TICKETS</a>
+    </div>
+  </div>
+
+</section>
+
+
+
+</main>
+
+<!--
+  Bundle order: core first, dev harness second (it stubs the Sheets response
+  before anything fetches), components, then main last.
+-->
+<script src="js/core.js"></script>
+
+<script src="js/header.js"></script>
+<script src="js/faq.js"></script>
+<script src="js/calendar.js"></script>
+<!-- <script src="js/creative.js"></script> -->
+<script src="js/main.js"></script>
+
+</body>
+</html>
