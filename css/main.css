@@ -18,6 +18,14 @@
   /* Published by header.js once the bar is measured. The fallback keeps
      anchors roughly correct before JavaScript runs. */
   --bc-header-height: 64px;
+
+  /* Artwork lives in Squarespace, not this repo. These local paths only exist
+     so index.html works offline — a relative url() resolves against the CSS
+     file, which on jsDelivr means the repo, and img/ is not served from there.
+     Point these at the Squarespace CDN URLs before launch, or override them
+     from Code Injection (see squarespace/code-injection-header.html). */
+  --bc-hero-image: url(../img/bc-initial-bg.jpg);
+  --bc-calendar-top-image: url(../img/bc-calendar-top.png);
 }
 
 /* Scope the reset to our own mount points so it never fights Squarespace. */
@@ -56,7 +64,7 @@ p:last-child {
 }
 
 main {
-  background-image: url(../img/bc-initial-bg.jpg);
+  background-image: var(--bc-hero-image);
   background-position: top center;
   background-repeat: no-repeat;
   background-size: cover;  
@@ -101,7 +109,7 @@ main {
     position: relative;
     padding: 0;
     margin: 0;
-    /* background-image: url(../img/bc-calendar-top.png); */
+    /* background-image: var(--bc-calendar-top-image); */
     background-position: top center;
     background-size: 100%;
     background-repeat: no-repeat;
