@@ -114,6 +114,7 @@ h5 {
     width: 1180px;
     margin-left: auto;
     margin-right: auto;
+    font-size: 24px;
     color: var(--bc-text) !important;
 }
 
@@ -175,6 +176,23 @@ h5 {
   font-size: 24px;
   color: var(--bc-text) !important;
 }
+
+.bc-creative {
+    position: relative;
+}
+
+.bc-creative__inner {
+    
+}
+
+.bc-creative__rock {
+    position: relative;
+    max-width: 100%;
+    width: 550px;
+    margin: 0 auto 3rem;
+}
+
+
 
 
 @media (max-width: 767px) {

@@ -38,6 +38,7 @@
       Header: 'A:D',
       Calendar: 'A:E',
       FAQs: 'A:B',
+      Creative: 'A:D',
     },
 
     // Set false before pinning the launch commit.

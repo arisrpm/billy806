@@ -151,6 +151,7 @@
 
 .bc-location {
     position: relative;
+    margin-bottom: 5rem;
 }
 
 .bc-location__inner {
@@ -192,6 +193,7 @@
 
 .bc-location__inner p {
     margin-bottom: 0;
+    font-size: 24px;
 }
 
 .bc-location a {

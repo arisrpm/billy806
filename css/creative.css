@@ -1,0 +1,187 @@
+/**
+ * BC Creative — structure only.
+ *
+ * The polaroid frame and signature are baked into the IMG uploaded to
+ * Squarespace, so nothing here draws a border or a shadow around the photo —
+ * that would double up on an asset that already has one.
+ */
+#bc-creative {
+    position: relative;
+    max-width: 100%;
+    width: 425px;
+    margin: 0 auto;
+}
+
+#bc-creative.is-loading {
+  min-height: 30vw;
+}
+
+/* ---- grid ---- */
+
+.bc-creative__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: clamp(1rem, 3vw, 2.5rem);
+
+  max-width: var(--bc-max-width, 1400px);
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+}
+
+.bc-creative__card {
+  display: block;
+  width: 100%;
+  padding: 0;
+
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.bc-creative__photo {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* On the page only the polaroid shows — name, role and bio all live in the
+   modal. The caption is still rendered because it is the button's accessible
+   name: without it a screen reader announces an unlabelled button. It becomes
+   visible only when a row has no IMG yet, so nobody silently vanishes from the
+   grid while photos are still being uploaded. */
+.bc-creative__caption {
+  display: block;
+  padding-top: 0.5rem;
+  text-align: center;
+}
+
+.bc-creative__caption.is-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.bc-creative__caption-name {
+  display: block;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.bc-creative__caption-role {
+  display: block;
+}
+
+/* ---- modal ---- */
+
+.bc-creative__dialog {
+  width: min(64rem, 92vw);
+  padding: clamp(1.5rem, 4vw, 3rem);
+
+  background: var(--bc-navy, #062449);
+  color: #fff;
+  border: 0;
+}
+
+.bc-creative__dialog::backdrop {
+  background: rgb(0 0 0 / 60%);
+}
+
+.bc-creative__close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+
+  width: 44px;
+  height: 44px;
+
+  background: none;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+}
+
+.bc-creative__close::before,
+.bc-creative__close::after {
+  content: '';
+  position: absolute;
+  inset: 50% 25% auto;
+
+  height: 2px;
+  background: currentColor;
+}
+
+.bc-creative__close::before { transform: rotate(45deg); }
+.bc-creative__close::after  { transform: rotate(-45deg); }
+
+.bc-creative__detail {
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(1.5rem, 4vw, 3rem);
+}
+
+.bc-creative__detail-photo {
+  flex: 0 0 clamp(10rem, 28%, 20rem);
+}
+
+.bc-creative__detail-photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.bc-creative__detail-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.bc-creative__name {
+  margin: 0;
+  font-size: clamp(1.75rem, 4vw, 3rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 1.05;
+}
+
+.bc-creative__role {
+  margin: 0 0 1.5em;
+  font-size: clamp(1.125rem, 2vw, 1.5rem);
+}
+
+.bc-creative__role[hidden] {
+  display: none;
+}
+
+.bc-creative__bio p {
+  margin: 0 0 1em;
+}
+
+.bc-creative__bio p:last-child {
+  margin-bottom: 0;
+}
+
+.bc-creative__bio a {
+  color: inherit;
+}
+
+.bc-creative__bio-loading {
+  opacity: 0.6;
+}
+
+@media (max-width: 700px) {
+  .bc-creative__detail {
+    flex-direction: column;
+  }
+
+  .bc-creative__detail-photo {
+    flex: 0 0 auto;
+    max-width: 14rem;
+  }
+}
