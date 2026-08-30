@@ -17,7 +17,7 @@
   const HEADING = 'h3';
 
   // false = opening one answer closes the others.
-  const ALLOW_MULTIPLE = true;
+  const ALLOW_MULTIPLE = false;
 
   const LINK = /((?:https?:\/\/|www\.)[^\s<]+[^\s<.,;:!?)])/gi;
 

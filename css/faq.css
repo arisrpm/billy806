@@ -17,7 +17,7 @@
 }
 
 .bc-faq__item {
-  border-bottom: 1px solid currentColor;
+  padding: 5px 0;
 }
 
 .bc-faq__heading {
@@ -45,15 +45,20 @@
 
 .bc-faq__label {
   flex: 1;
+  font-weight: bold;
+  text-transform: uppercase;
 }
 
 /* Plus that becomes a minus, drawn from the button's own state so the markup
    carries no duplicate "open" flag. */
 .bc-faq__icon {
+  /* Stroke weight of the plus/minus. One value drives both bars. */
+  --bc-faq-icon-weight: 4px;
+
   position: relative;
   flex: 0 0 auto;
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
 }
 
 .bc-faq__icon::before,
@@ -62,8 +67,8 @@
   position: absolute;
   inset: 50% 0 auto 0;
 
-  height: 2px;
-  margin-top: -1px;
+  height: var(--bc-faq-icon-weight);
+  margin-top: calc(var(--bc-faq-icon-weight) / -2);
   background: currentColor;
   transition: transform 0.2s ease;
 }
@@ -107,21 +112,16 @@
 
 .bc-faq {
   --bc-faq-bg: url(https://images.squarespace-cdn.com/content/69ced95badea255402fe4b3b/4e9e4fc3-dc8b-49df-9d1c-31be38d3ef0c/bc-faq-bg.png);
-
-  /* Anchored to the bottom: the paper stack and wood stay put while the white
-     panel grows upward out of them. */
   background-image: var(--bc-faq-bg);
   background-position: bottom center;
   background-repeat: no-repeat;
-  background-size: 100% auto;
-  padding: 5rem 0;
-
-  /* Column order is reversed against the DOM on purpose. The button comes
-     first in markup so a screen reader meets the control before the content
-     it opens; visually the buckle belongs underneath, and gets pushed down as
-     the panel grows. */
+  background-size: 100%;
+  padding: 0 0;
   display: flex;
   flex-direction: column;
+  min-height: 377px;
+  justify-content: center;
+  outline: none;
 }
 
 .bc-faq__toggle {
