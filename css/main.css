@@ -244,7 +244,35 @@ h5 {
 }
 
 @media (max-width: 640px) {
+  #about {
+      padding-bottom: 35px;
+  }
+  #about .container h2 {
+      font-size: 36px;
+  }
+  #about .container h5 {
+      font-size: 28px;
+      line-height: 1.3;
+  }
+  #about .container p {
+      font-size: 20px;
+  }
   .calendar-ending p {
       font-size: 18px;
   }
+  .bc-socials img {
+      height: 40px;
+  }
+  .bc-socials {
+      gap: 40px;
+  }  
+}
+
+@media (max-width: 600px) {
+  #about .container h2 {
+    font-size: 5.8vw;
+  }
+  #about .container h5 {
+    font-size: 22px;
+  }  
 }

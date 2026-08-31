@@ -224,7 +224,28 @@
  * Narrow screens
  * ------------------------------------------------------------------ */
 
-/* Between the two breakpoints the grid survives, just tighter. */
+@media (max-width: 680px) {
+  #calendar h2 {
+      font-size: 56px;
+      width: auto;
+      min-width: auto;      
+  }
+  .bc-calendar {
+    padding-top: 0;
+    margin: 0;
+  }
+  .bc-calendar__nav {
+      margin-top: -2em;
+      padding-top: 35px;
+  }
+  .bc-calendar__legend {
+      font-size: 14px;
+  }
+  .bc-calendar__swatch {
+      width: 30px;
+  }
+}
+
 @media (max-width: 900px) {
   .bc-calendar__day {
     min-height: 4.5rem;
