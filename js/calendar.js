@@ -38,7 +38,8 @@
     // ticked. Set true to narrow it to only the month currently on screen.
     legendPerMonth: false,
 
-    legendText: 'Click on the date and time below for tickets. <br>Best Availability =',
+    legendText: 'Click on the date and time below for tickets.',
+    legendBestAvailableText: ' Best Availability =',
 
     // Below this width the month grid is replaced by a vertical list of dates.
     // Set to '' to keep the grid at every size (it tightens up under 900px).
@@ -357,6 +358,7 @@
 
         <p class="bc-calendar__legend"${showLegend(year, month) ? '' : ' hidden'}>
           ${BC.esc(CONFIG.legendText)}
+          ${CONFIG.legendBestAvailableText ? `<br>${BC.esc(CONFIG.legendBestAvailableText)}` : ''}
           <span class="bc-calendar__swatch" aria-hidden="true"></span>
           <span class="bc-calendar__sr">highlighted showtimes</span>
         </p>
