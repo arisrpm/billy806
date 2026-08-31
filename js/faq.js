@@ -19,6 +19,12 @@
   // false = opening one answer closes the others.
   const ALLOW_MULTIPLE = false;
 
+  // Client request: the accordion is visible from the start and the buckle is
+  // not clickable for now. Set PANEL_TOGGLE to true to hand the open/close
+  // behaviour back — everything for it is still here.
+  const PANEL_STARTS_OPEN = true;
+  const PANEL_TOGGLE = false;
+
   // Torn-paper graphic that closes off the bottom of the panel. Set to '' to
   // drop it. Rendered by JS rather than sitting in the Code Block so it always
   // lands directly after the accordion, however many questions there are.
@@ -207,7 +213,28 @@
       panel.inert = !open;
     };
 
-    setOpen(false);
+    // Apply the starting state with the transition suppressed, so an
+    // already-open panel does not slide itself down on page load. Later
+    // toggles animate normally.
+    panel.style.transition = 'none';
+    setOpen(PANEL_STARTS_OPEN);
+    void panel.offsetHeight;
+    panel.style.transition = '';
+
+    if (!PANEL_TOGGLE) {
+      // Not a disclosure any more, so it must not present as one. Swapping the
+      // <button> for a <div> keeps the artwork and the CSS while taking it out
+      // of the tab order — a focusable control that does nothing is worse than
+      // no control. The visually-hidden label goes too: it exists to name a
+      // button, and there is no longer a button to name.
+      const still = document.createElement('div');
+      still.className = toggle.className;
+      still.innerHTML = toggle.innerHTML;
+      still.querySelector('.bc-faq__toggle-label')?.remove();
+
+      toggle.replaceWith(still);
+      return;
+    }
 
     toggle.addEventListener('click', () => {
       setOpen(toggle.getAttribute('aria-expanded') !== 'true');

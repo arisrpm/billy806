@@ -128,6 +128,9 @@
 .bc-faq__toggle {
   order: 2;
 
+  /* No pointer affordance while the toggle is switched off in faq.js. */
+  cursor: default;
+
   display: block;
   width: 100%;
   padding: 0;
@@ -135,6 +138,9 @@
   background: none;
   border: 0;
   color: inherit;
+}
+
+button.bc-faq__toggle {
   cursor: pointer;
 }
 
