@@ -194,9 +194,10 @@
 .bc-location__inner p {
     margin-bottom: 0;
     font-size: 24px;
+    font-weight: 600;
 }
 
-.bc-location a {
+.bc-location a.btn {
     font-family: var(--bc-main-font);
     grid-column: 3;
     justify-self: end;

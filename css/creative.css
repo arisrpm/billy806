@@ -41,6 +41,11 @@
   cursor: pointer;
 }
 
+/* No bio, no modal — so no pointer affordance either. */
+.bc-creative__card.is-static {
+  cursor: default;
+}
+
 .bc-creative__photo {
   display: block;
   width: 100%;

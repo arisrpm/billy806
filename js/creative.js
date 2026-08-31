@@ -160,26 +160,50 @@
    * Rendering
    * ------------------------------------------------------------------ */
 
-  const cardHtml = (person, index) => `
-    <li class="bc-creative__item">
-      <button
-        class="bc-creative__card"
-        type="button"
-        data-index="${index}"
-        aria-haspopup="dialog"
-      >
+  const photoHtml = person =>
+    person.img
+      ? `<img class="bc-creative__photo" src="${BC.esc(person.img)}" alt="${BC.esc(person.name)}" loading="lazy">`
+      : '';
+
+  const captionHtml = (person, interactive) => {
+    // A static card's name is already announced by the image's alt text, so a
+    // second copy here would have a screen reader say it twice. A button needs
+    // it: without a text child it is announced as an unlabelled button.
+    if (person.img && !interactive) return '';
+
+    return `
+      <span class="bc-creative__caption${person.img ? ' is-sr-only' : ''}">
+        <span class="bc-creative__caption-name">${BC.esc(person.name)}</span>
+        ${person.role ? `<span class="bc-creative__caption-role">${BC.esc(person.role)}</span>` : ''}
+      </span>
+    `;
+  };
+
+  /**
+   * Only someone with a bio gets a button. With nothing to show, a modal that
+   * opens on an empty panel is worse than no modal — and a <button> that does
+   * nothing is a broken promise to anyone tabbing through, so the card renders
+   * as plain markup instead of a disabled control.
+   */
+  const cardHtml = (person, index) => {
+    const interactive = Boolean(person.bio);
+    const inner = photoHtml(person) + captionHtml(person, interactive);
+
+    return `
+      <li class="bc-creative__item">
         ${
-          person.img
-            ? `<img class="bc-creative__photo" src="${BC.esc(person.img)}" alt="${BC.esc(person.name)}" loading="lazy">`
-            : ''
+          interactive
+            ? `<button
+                 class="bc-creative__card"
+                 type="button"
+                 data-index="${index}"
+                 aria-haspopup="dialog"
+               >${inner}</button>`
+            : `<div class="bc-creative__card is-static">${inner}</div>`
         }
-        <span class="bc-creative__caption${person.img ? ' is-sr-only' : ''}">
-          <span class="bc-creative__caption-name">${BC.esc(person.name)}</span>
-          ${person.role ? `<span class="bc-creative__caption-role">${BC.esc(person.role)}</span>` : ''}
-        </span>
-      </button>
-    </li>
-  `;
+      </li>
+    `;
+  };
 
   const render = () => {
     root.innerHTML = `
@@ -235,6 +259,8 @@
   };
 
   const open = person => {
+    if (!person || !person.bio) return;
+
     dialog.dataset.name = person.name;
 
     dialog.querySelector('.bc-creative__detail-photo').innerHTML = person.img
@@ -258,7 +284,8 @@
     root.addEventListener('click', event => {
       const card = event.target.closest('.bc-creative__card');
 
-      if (card) {
+      // Static cards carry no data-index and are not clickable.
+      if (card && card.dataset.index !== undefined) {
         open(people[Number(card.dataset.index)]);
         return;
       }

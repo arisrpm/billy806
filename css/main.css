@@ -24,7 +24,7 @@
      file, which on jsDelivr means the repo, and img/ is not served from there.
      Point these at the Squarespace CDN URLs before launch, or override them
      from Code Injection (see squarespace/code-injection-header.html). */
-  --bc-hero-image: url(https://images.squarespace-cdn.com/content/69ced95badea255402fe4b3b/02555bc6-3595-4494-b0c7-b10ceb249b04/bc-initial-bg.jpg);
+  --bc-hero-image: url(https://images.squarespace-cdn.com/content/69ced95badea255402fe4b3b/aec8dcc5-81ee-45db-8099-92a8cbd2cf6e/bc-full-bg2.jpg);
   --bc-calendar-top-image: url(../img/bc-calendar-top.png);
 }
 
