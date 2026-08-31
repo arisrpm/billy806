@@ -219,6 +219,11 @@
     flex-direction: column;
   }
 
+  .bc-location__inner {
+      gap: 15px;
+      width: 720px;
+}
+
   /* A few degrees costs far more width on a full-bleed phone note than it
      does in a side-by-side row, so ease off rather than stack them askew. */
   .bc-notice--date {

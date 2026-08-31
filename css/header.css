@@ -117,7 +117,7 @@
   position: fixed;
   inset: var(--bc-header-height) 0 0 0;
 
-  padding: 2rem 1.25rem;
+  padding: 2rem 3.25rem;
   overflow-y: auto;
 
   background: var(--bc-background);
@@ -135,9 +135,12 @@
 
 .bc-header__link {
   display: block;
-  padding: 0.75rem 0;
+  padding: 2rem 0;
   color: inherit;
   text-decoration: none;
+  font-size: 3rem;
+  font-weight: 600;
+  text-transform: uppercase;  
 }
 
 /* Set by header.js while the menu is open. */
@@ -207,6 +210,21 @@
     }
 }
 
+
+
+@media (max-width: 420px)  {
+  .bc-header {
+    row-gap: 0;
+    padding: 15px 1.25rem 15px;
+  }
+  .bc-header__tickets {
+    font-size: 18px;
+    min-height: 38px;
+  }
+  .bc-header__cta {
+      font-size: 18px;
+  }
+}
 
 @media (prefers-reduced-motion: reduce) {
   .bc-header__menu span {
