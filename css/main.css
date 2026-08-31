@@ -232,6 +232,10 @@ h5 {
     margin-bottom: 0.5vw;
 }
 
+img.dev-calendar-bg-bottom {
+  height: 57px;
+}
+
 @media (max-width: 767px) {
     .calendar-ending {
         width: 425px;
@@ -240,6 +244,7 @@ h5 {
     .calendar-ending span {
         display: block;
         font-size: 0px;
+        height: 0px;
     }
 }
 
@@ -275,4 +280,7 @@ h5 {
   #about .container h5 {
     font-size: 22px;
   }  
+  #footer-sections .content {
+    padding-top: 3rem;
+  }
 }

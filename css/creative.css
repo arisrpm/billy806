@@ -82,7 +82,7 @@
 /* ---- modal ---- */
 
 .bc-creative__dialog {
-  width: min(64rem, 92vw);
+  width: min(74rem, 92vw);
   padding: clamp(1.5rem, 4vw, 3rem);
 
   background: var(--bc-navy, #062449);
@@ -177,7 +177,7 @@
   opacity: 0.6;
 }
 
-@media (max-width: 700px) {
+@media (max-width: 740px) {
   .bc-creative__detail {
     flex-direction: column;
   }
@@ -185,5 +185,11 @@
   .bc-creative__detail-photo {
     flex: 0 0 auto;
     max-width: 14rem;
+  }
+  .bc-creative__rock {
+    width: 320px;
+  }
+  #bc-creative {
+        width: 305px;
   }
 }

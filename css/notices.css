@@ -216,12 +216,24 @@
 
 @media (max-width: 900px) {
   .bc-notices__inner {
-    flex-direction: column;
+    max-width: 600px;
+  }
+
+  .bc-notice__date-main {
+      font-size: 42px;
+  }
+
+  .bc-notice {
+      margin-left: 0;
+  }
+
+  .bc-notice--info {
+      padding: 2rem 2rem 2rem;
   }
 
   .bc-location__inner {
       gap: 15px;
-      width: 720px;
+      width: 640px;
 }
 
   /* A few degrees costs far more width on a full-bleed phone note than it
@@ -233,6 +245,20 @@
 
   .bc-notice--info {
     flex: 1 1 auto;
+  }
+}
+
+@media (max-width: 740px) {
+  .bc-location__inner {
+      flex-direction: column;
+      width: 420px;
+  }
+  .bc-notice__date-main {
+    font-size: 36px;
+  }  
+  .bc-notice--date {
+    padding-top: 3rem;
+    padding-bottom: 2rem;
   }
 }
 
