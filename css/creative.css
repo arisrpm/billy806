@@ -177,6 +177,32 @@
   opacity: 0.6;
 }
 
+.bc-creative__bio {
+    height: 250px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: auto;
+    scrollbar-color: #062449 #f5f37e;
+    padding-right: 25px;
+}
+
+.bc-creative__bio::-webkit-scrollbar {
+    width: 18px
+}
+
+.bc-creative__bio::-webkit-scrollbar-track {
+    background: #f5f37e
+}
+
+.bc-creative__bio::-webkit-scrollbar-thumb {
+    background: #f5f37e;
+    border-radius: 0
+}
+
+.bc-creative__bio::-webkit-scrollbar-thumb:hover {
+    background: #f5f37e
+}
+
 @media (max-width: 740px) {
   .bc-creative__detail {
     flex-direction: column;

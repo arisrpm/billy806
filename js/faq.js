@@ -45,13 +45,32 @@
         `<a href="${BC.normalizeUrl(match)}" target="_blank" rel="noopener noreferrer">${match}</a>`
     );
 
-  const formatAnswer = value =>
-    // Order matters: linkify LAST. Rewriting newlines after the anchors exist
-    // injects <br> into the middle of the tags we just built.
-    BC.esc(value)
+  /** Blank lines become paragraphs, single newlines become breaks. */
+  const paragraphs = html =>
+    html
       .split(/\n{2,}/)
-      .map(block => `<p>${linkify(block.trim().replace(/\n/g, '<br>'))}</p>`)
+      .map(block => `<p>${block.trim().replace(/\n/g, '<br>')}</p>`)
       .join('');
+
+  /**
+   * Prefers the marked-up cell that core rebuilt from the sheet's formatting,
+   * so a link the client added with Insert -> Link survives. That HTML is
+   * already escaped, so it must not be escaped or linkified again — doing so
+   * would double-escape the anchors into visible text.
+   *
+   * Falls back to the plain value: escape, then linkify bare URLs last, since
+   * rewriting newlines after the anchors exist injects <br> inside the tags.
+   */
+  const formatAnswer = (row) => {
+    const rich = row.$html?.answer;
+
+    if (rich) return paragraphs(rich);
+
+    return paragraphs(BC.esc(row.answer)).replace(
+      /<p>([\s\S]*?)<\/p>/g,
+      (_, inner) => `<p>${linkify(inner)}</p>`
+    );
+  };
 
   const renderItem = (row, index) => {
     const questionId = `bc-faq-q-${index}`;
@@ -81,7 +100,7 @@
           hidden
         >
           <div class="bc-faq__answer-inner">
-            ${formatAnswer(row.answer)}
+            ${formatAnswer(row)}
           </div>
         </div>
 

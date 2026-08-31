@@ -17,6 +17,11 @@
  *   BC.normalizeUrl(value)  -> href-safe string, or '' if unusable
  *   BC.isValidUrl(value)    -> boolean
  *   BC.bool(value)          -> boolean
+ *
+ * Rows also carry `$html` for any cell the client formatted in the sheet.
+ * A link, bold or italic applied in Google Sheets lives in the cell's format,
+ * not its value, so `values.batchGet` returns only the visible text and the
+ * URLs vanish. This reads textFormatRuns instead and rebuilds them as markup.
  */
 (() => {
   'use strict';
@@ -72,6 +77,11 @@
 
   const HOSTNAME_LIKE = /^[a-z0-9-]+(\.[a-z0-9-]+)+([/?#]|$)/i;
 
+  // mailto: and tel: are real destinations in FAQ copy — an accessibility
+  // contact address, a group-sales phone number. They cannot execute anything,
+  // unlike javascript: and data:, which stay rejected.
+  const SAFE_PROTOCOLS = new Set(['http:', 'https:', 'mailto:', 'tel:']);
+
   /**
    * Turn a Sheet cell into a string that is safe to put in an href, or '' if
    * it cannot be one.
@@ -89,7 +99,10 @@
     // Anything that isn't an anchor, a path, an explicit http(s) URL, or a
     // hostname is not a link — "TBD" must not resolve to a page on this site.
     const linkable =
-      /^[#/]/.test(raw) || /^https?:\/\//i.test(raw) || HOSTNAME_LIKE.test(raw);
+      /^[#/]/.test(raw) ||
+      /^https?:\/\//i.test(raw) ||
+      /^(mailto|tel):/i.test(raw) ||
+      HOSTNAME_LIKE.test(raw);
 
     if (!linkable) return '';
 
@@ -98,7 +111,7 @@
     try {
       const url = new URL(candidate, window.location.href);
 
-      if (url.protocol !== 'http:' && url.protocol !== 'https:') return '';
+      if (!SAFE_PROTOCOLS.has(url.protocol)) return '';
 
       return /^[#/]/.test(candidate) ? candidate : url.href;
     } catch {
@@ -120,27 +133,89 @@
       .toLowerCase()
       .replace(/[^a-z0-9]+(.)?/g, (_, ch) => (ch ? ch.toUpperCase() : ''));
 
+  const cellValue = cell => String(cell?.formattedValue ?? '');
+
   /**
-   * Sheets returns positional arrays. Keying rows by their heading means a
-   * client inserting a column doesn't silently shift every field by one.
+   * Rebuild a cell's links, bold and italic from its textFormatRuns.
+   *
+   * Each run marks where a format starts; it ends where the next run begins.
+   * Returns '' when the cell carries no formatting, so callers can fall back
+   * to the plain value and nothing pays for this unless it is used.
+   *
+   * NOTE: run indices address the UNTRIMMED value. Slicing a trimmed string
+   * would shift every run by the leading whitespace and mangle the output.
    */
-  const toObjects = values => {
-    if (!Array.isArray(values) || values.length < 2) return [];
+  const runsToHtml = (raw, runs) => {
+    if (!raw || !Array.isArray(runs) || !runs.length) return '';
 
-    const keys = values[0].map(camelKey);
+    const decorated = runs.some(run => {
+      const format = run.format || {};
+      return Boolean(format.link?.uri || format.bold || format.italic);
+    });
 
-    return values
+    if (!decorated) return '';
+
+    let html = esc(raw.slice(0, runs[0].startIndex || 0));
+
+    runs.forEach((run, i) => {
+      const start = run.startIndex || 0;
+      const end = i + 1 < runs.length ? runs[i + 1].startIndex : raw.length;
+
+      let piece = esc(raw.slice(start, end));
+      if (!piece) return;
+
+      const format = run.format || {};
+
+      if (format.italic) piece = `<em>${piece}</em>`;
+      if (format.bold) piece = `<strong>${piece}</strong>`;
+
+      const href = normalizeUrl(format.link?.uri);
+
+      if (href) {
+        piece = `<a href="${esc(href)}" target="_blank" rel="noopener noreferrer">${piece}</a>`;
+      }
+
+      html += piece;
+    });
+
+    return html;
+  };
+
+  /**
+   * Sheets returns positional cells. Keying rows by their heading means a
+   * client inserting a column doesn't silently shift every field by one.
+   *
+   * Any cell the client formatted also lands on `row.$html` under the same
+   * key, so a module can prefer the marked-up version and fall back to plain
+   * text without knowing anything about the sheet.
+   */
+  const toObjects = rows => {
+    if (!Array.isArray(rows) || rows.length < 2) return [];
+
+    const keys = (rows[0].values || []).map(cell => camelKey(cellValue(cell)));
+
+    return rows
       .slice(1)
       .map(row => {
+        const cells = row.values || [];
         const obj = {};
+        const html = {};
 
         keys.forEach((key, i) => {
-          if (key) obj[key] = String(row[i] ?? '').trim();
+          if (!key) return;
+
+          const raw = cellValue(cells[i]);
+          obj[key] = raw.trim();
+
+          const rich = runsToHtml(raw, cells[i]?.textFormatRuns);
+          if (rich) html[key] = rich;
         });
+
+        if (Object.keys(html).length) obj.$html = html;
 
         return obj;
       })
-      .filter(obj => Object.values(obj).some(Boolean));
+      .filter(obj => Object.entries(obj).some(([key, value]) => key !== '$html' && value));
   };
 
   /* ------------------------------------------------------------------ *
@@ -154,13 +229,21 @@
       params.append('ranges', `${tab}!${columns}`);
     });
 
-    params.set('majorDimension', 'ROWS');
-    params.set('valueRenderOption', 'FORMATTED_VALUE');
+    params.set('includeGridData', 'true');
+
+    // Without this mask the response carries every formatting property for
+    // every cell. Restricted to the two fields we use it is ~0.8KB more than
+    // values:batchGet over the wire, for the same single request.
+    params.set(
+      'fields',
+      'sheets(properties.title,data.rowData.values(formattedValue,textFormatRuns))'
+    );
+
     params.set('key', CONFIG.apiKey);
 
     return (
       'https://sheets.googleapis.com/v4/spreadsheets/' +
-      `${encodeURIComponent(CONFIG.spreadsheetId)}/values:batchGet?${params}`
+      `${encodeURIComponent(CONFIG.spreadsheetId)}?${params}`
     );
   };
 
@@ -194,13 +277,10 @@
     const data = await response.json();
     const sheets = {};
 
-    (data.valueRanges || []).forEach(entry => {
-      // Ranges come back as "Calendar!A1:E99", quoted if the tab has spaces.
-      const tab = String(entry.range || '')
-        .split('!')[0]
-        .replace(/^'|'$/g, '');
-
-      if (tab) sheets[tab] = toObjects(entry.values || []);
+    // One entry per sheet, in the order the ranges were requested.
+    (data.sheets || []).forEach(sheet => {
+      const tab = sheet.properties?.title;
+      if (tab) sheets[tab] = toObjects(sheet.data?.[0]?.rowData || []);
     });
 
     return sheets;
