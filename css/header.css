@@ -146,6 +146,44 @@
   overflow: hidden;
 }
 
+/* ------------------------------------------------------------------ *
+ * Narrow screens
+ * ------------------------------------------------------------------ */
+
+/* Measured, not guessed: hamburger (65) + centre text (324) + button (221)
+   + padding and gaps (72) needs 682px on one row. Below that the button drops
+   to its own full-width row.
+   NOTE: the centre text is client-editable, so a longer line raises that
+   threshold — a media query cannot know. If the sheet copy grows, raise this
+   number to match. */
+@media (max-width: 700px) {
+  .bc-header {
+    /* Hamburger sized to content, centre text takes what is left. */
+    grid-template-columns: auto 1fr;
+    row-gap: 0.75rem;
+  }
+
+  .bc-header__menu {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .bc-header__cta {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: center;
+  }
+
+  /* Full width on its own row — the biggest tap target on the page, and the
+     one thing every visitor is there to press. */
+  .bc-header__tickets {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-self: stretch;
+    justify-content: center;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .bc-header__menu span {
     transition: none;
