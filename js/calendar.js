@@ -38,7 +38,7 @@
     // ticked. Set true to narrow it to only the month currently on screen.
     legendPerMonth: false,
 
-    legendText: 'Click on the date and time below for tickets. Best Availability =',
+    legendText: 'Click on the date and time below for tickets. <br>Best Availability =',
 
     // Below this width the month grid is replaced by a vertical list of dates.
     // Set to '' to keep the grid at every size (it tightens up under 900px).
