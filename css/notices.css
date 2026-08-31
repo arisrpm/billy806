@@ -100,6 +100,8 @@
   text-align: center;
   padding-top: 7rem;
   padding-bottom: 5rem;
+  padding-left: clamp(1.5rem, 3vw, 1.5rem);
+  padding-right: clamp(1.5rem, 3vw, 1.5rem);  
 }
 
 .bc-notice__date {
@@ -114,11 +116,18 @@
 }
 
 .bc-notice__date-lead {
-  font-size: clamp(1.5rem, 3.5vw, 2.75rem);
+  /* font-size: clamp(1.5rem, 3.5vw, 2.75rem); */
+  font-size: 34px;
+  margin-bottom: 15px;  
 }
 
 .bc-notice__date-main {
-  font-size: clamp(3rem, 8vw, 6rem);
+  /* font-size: clamp(3rem, 8vw, 6rem); */
+  font-size: 2rem;
+}
+
+.bc-notice__date-ma a {
+  color: var(--bc-note-ink);
 }
 
 /* ---- information note ---- */
