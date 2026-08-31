@@ -17,11 +17,12 @@
   const TAB = 'Calendar';
 
   const CONFIG = {
-    baseUrl: 'https://www.telecharge.com/Billy-Crystal-860-Tickets',
+    // Lowercase "tickets" to match the URL the ticketing team supplied exactly.
+    baseUrl: 'https://www.telecharge.com/Billy-Crystal-860-tickets',
 
-    // Tracking id. Left empty for now — AID and utm_id are omitted from the
-    // links entirely until it is filled in, rather than sent blank.
-    aid: '',
+    // Supplied by the ticketing team. Emitted as both AID and utm_id — if this
+    // is ever blanked, both are omitted rather than sent empty.
+    aid: 'BWY001492800',
 
     utm: {
       utm_source: 'show_site',
