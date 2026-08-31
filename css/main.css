@@ -131,6 +131,7 @@ h5 {
     background-size: 100%;
     background-repeat: no-repeat;
     min-height: 60vh;
+    box-shadow: 0px 20px 20px 0px rgb(0, 0, 0, 52%);
 }
 
 /* #calendar:after {
@@ -174,6 +175,10 @@ h5 {
 
 .calendar-ending p {
   font-size: 24px;
+  color: var(--bc-text) !important;
+}
+
+.calendar-ending p a {
   color: var(--bc-text) !important;
 }
 
@@ -234,6 +239,7 @@ h5 {
 
 img.dev-calendar-bg-bottom {
   height: 57px;
+  display: block;
 }
 
 @media (max-width: 767px) {
