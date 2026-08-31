@@ -19,6 +19,12 @@
   // false = opening one answer closes the others.
   const ALLOW_MULTIPLE = false;
 
+  // Torn-paper graphic that closes off the bottom of the panel. Set to '' to
+  // drop it. Rendered by JS rather than sitting in the Code Block so it always
+  // lands directly after the accordion, however many questions there are.
+  const BOTTOM_IMAGE =
+    'https://images.squarespace-cdn.com/content/69ced95badea255402fe4b3b/af7338cf-9ed5-426f-84e0-3ebdf4c8098a/bc-faq-bottom2.png';
+
   const LINK = /((?:https?:\/\/|www\.)[^\s<]+[^\s<.,;:!?)])/gi;
 
   let bound = false;
@@ -119,6 +125,24 @@
     });
   };
 
+  /**
+   * Sits after #bc-faq, not inside it — the accordion's innerHTML is rewritten
+   * on render, so anything within would be wiped. Decorative, hence alt="".
+   */
+  const addBottomImage = container => {
+    if (!BOTTOM_IMAGE) return;
+
+    const parent = container.parentElement;
+    if (!parent || parent.querySelector(':scope > .bc-faq-bottom')) return;
+
+    const img = document.createElement('img');
+    img.className = 'bc-faq-bottom';
+    img.src = BOTTOM_IMAGE;
+    img.alt = '';
+
+    container.after(img);
+  };
+
   /* ------------------------------------------------------------------ *
    * Outer panel
    * ------------------------------------------------------------------ */
@@ -200,6 +224,7 @@
 
       container.innerHTML = faqs.map(renderItem).join('');
       bindEvents(container);
+      addBottomImage(container);
       bindPanel();
     } catch (error) {
       console.error(`${MODULE} Unable to load FAQs.`, error);

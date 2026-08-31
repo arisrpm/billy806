@@ -179,7 +179,7 @@
 
 .bc-faq__panel.is-open {
   grid-template-rows: 1fr;
-  padding: 6rem 0;
+  padding: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -193,6 +193,10 @@
   margin: 0 0 1.5rem;
   text-align: center;
   text-transform: uppercase;
+}
+
+.bc-faq__panel-inner img {
+  display: block;
 }
 
 /* ------------------------------------------------------------------ *
@@ -222,4 +226,12 @@
 .bc-faq__item:has(.bc-faq__question[aria-expanded='true']) .bc-faq__answer-inner {
   padding-left: 1rem;
   padding-right: 1rem;
+}
+
+/* Torn-paper graphic closing the bottom of the panel, inserted by faq.js
+   directly after the accordion. */
+.bc-faq-bottom {
+  display: block;
+  width: 100%;
+  height: auto;
 }
