@@ -24,9 +24,8 @@
   // injection so nav changes are a git commit, not a CMS edit.
   const NAV = [
     { label: 'About', href: '#about' },
-    { label: 'Calendar', href: '#calendar' },
     { label: 'Tickets', href: '#tickets' },
-    { label: 'Creative Team', href: '#creative' },
+    { label: 'Creative', href: '#creative' },
     { label: 'FAQ', href: '#faq' },
   ];
 
