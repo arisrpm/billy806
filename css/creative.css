@@ -8,7 +8,7 @@
 #bc-creative {
     position: relative;
     max-width: 100%;
-    width: 425px;
+    width: 935px;
     margin: 0 auto;
 }
 
@@ -201,6 +201,12 @@
 
 .bc-creative__bio::-webkit-scrollbar-thumb:hover {
     background: #f5f37e
+}
+
+@media (max-width: 990px) {
+  #bc-creative {
+    width: 715px;
+  }
 }
 
 @media (max-width: 740px) {

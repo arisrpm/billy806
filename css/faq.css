@@ -116,7 +116,7 @@
   background-image: var(--bc-faq-bg);
   background-position: bottom center;
   background-repeat: no-repeat;
-  background-size: 100%;
+  background-size: auto;
   padding: 0 0;
   display: flex;
   flex-direction: column;
