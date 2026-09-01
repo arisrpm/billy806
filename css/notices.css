@@ -224,7 +224,26 @@
 
 /* ---- narrow screens ---- */
 
+.bc-notice__date-main img {
+    display: inline-block;
+    position: relative;
+    width: 24px;
+}
+
+@media (max-width: 1046px) {
+  .bc-notice__date-main {
+      font-size: 3vw;
+  }  
+  .bc-notice--date{
+    padding-bottom: 2rem;
+  }
+}
+
 @media (max-width: 900px) {
+  .bc-notice__date-main img {
+    width: 14px;
+  }
+
   .bc-notices__inner {
     max-width: 690px;
   }
@@ -271,11 +290,14 @@
       width: 420px;
   }
   .bc-notice__date-main {
-    font-size: 5vw;
+    font-size: 3.5vw;
   }  
+  .bc-notice__date-main img {
+    font-size: 19px;
+  }
   .bc-notice--date {
-    padding-top: 3rem;
-    padding-bottom: 2rem;
+    padding-top: 4rem;
+    padding-bottom: 3rem;
   }
 }
 
