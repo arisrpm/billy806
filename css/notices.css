@@ -126,7 +126,7 @@
   font-size: 2rem;
 }
 
-.bc-notice__date-ma a {
+.bc-notice__date a {
   color: var(--bc-note-ink);
 }
 
@@ -226,11 +226,11 @@
 
 @media (max-width: 900px) {
   .bc-notices__inner {
-    max-width: 600px;
+    max-width: 690px;
   }
 
   .bc-notice__date-main {
-      font-size: 42px;
+      font-size: 20px;
   }
 
   .bc-notice {
@@ -240,6 +240,11 @@
   .bc-notice--info {
       padding: 2rem 2rem 2rem;
   }
+
+  .bc-notice__date-lead {
+      font-size: 24px;
+      margin-bottom: 8px;
+  }  
 
   .bc-location__inner {
       gap: 15px;
@@ -251,10 +256,12 @@
   .bc-notice--date {
     --bc-note-rotate: -2deg;
     margin-right: 0;
+    padding-top: 6rem;
+    padding-bottom: 5rem;    
   }
 
   .bc-notice--info {
-    flex: 1 1 auto;
+    flex: 0 1 22rem;
   }
 }
 
@@ -264,11 +271,30 @@
       width: 420px;
   }
   .bc-notice__date-main {
-    font-size: 36px;
+    font-size: 5vw;
   }  
   .bc-notice--date {
     padding-top: 3rem;
     padding-bottom: 2rem;
+  }
+}
+
+@media (max-width: 615px) {
+  .bc-notice__date-main {
+    font-size: 4.25vw;
+  } 
+}
+
+@media (max-width: 500px) {
+  .bc-notices__inner {
+    flex-direction: column;
+    align-items: center;
+  }
+  .bc-notice--info {
+    flex: 0 1 10rem;
+  }
+  .bc-notice__date-main {
+    font-size: 24px;
   }
 }
 

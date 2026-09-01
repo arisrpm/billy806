@@ -298,4 +298,10 @@ img.dev-calendar-bg-bottom {
   #footer-sections .content {
     padding-top: 3rem;
   }
+  #footer-sections h4 {
+    font-size: 28px;
+    max-width: 100%;
+    width: 280px;
+    margin: 0 auto;
+  }
 }
