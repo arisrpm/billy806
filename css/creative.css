@@ -168,6 +168,7 @@
 .bc-creative__bio p {
   margin: 0 0 1em;
   font-size: 18px;
+  font-weight: 500;
 }
 
 .bc-creative__bio p:last-child {
