@@ -184,28 +184,37 @@
 
 .bc-creative__bio {
     height: 250px;
-    overflow-y: auto;
+    
+    /* Always reserve/show scrollbar when browser permits */
+    overflow-y: scroll;
     overflow-x: hidden;
+    scrollbar-gutter: stable;
+    
+    padding-right: 25px;
+
+    /* Firefox */
     scrollbar-width: auto;
     scrollbar-color: #062449 #f5f37e;
-    padding-right: 25px;
 }
 
+/* Chrome / Safari / Edge */
 .bc-creative__bio::-webkit-scrollbar {
-    width: 18px
+    width: 18px;
 }
 
 .bc-creative__bio::-webkit-scrollbar-track {
-    background: #f5f37e
+    background: #f5f37e;
+    border-radius: 0;
 }
 
 .bc-creative__bio::-webkit-scrollbar-thumb {
-    background: #f5f37e;
-    border-radius: 0
+    background: #062449;
+    border-radius: 0;
+    border: 4px solid #f5f37e;
 }
 
 .bc-creative__bio::-webkit-scrollbar-thumb:hover {
-    background: #f5f37e
+    background: #062449;
 }
 
 @media (max-width: 990px) {
