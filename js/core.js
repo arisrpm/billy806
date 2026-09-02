@@ -14,6 +14,7 @@
  *   BC.getSheet(tab)        -> Promise<Row[]>
  *   BC.getRow(tab, index=0) -> Promise<Row|null>           single-config tabs
  *   BC.esc(value)           -> HTML-escaped string
+ *   BC.allowInline(html)    -> re-enables <em>/<strong>/<i>/<b>/<br>/<u>/<sup>/<sub>
  *   BC.normalizeUrl(value)  -> href-safe string, or '' if unusable
  *   BC.isValidUrl(value)    -> boolean
  *   BC.bool(value)          -> boolean
@@ -74,6 +75,18 @@
    */
   const esc = value =>
     String(value ?? '').replace(/[&<>"']/g, ch => ESCAPES[ch]);
+
+  /**
+   * Inline tags a client may type straight into a cell. No attributes are
+   * matched, so nothing can be smuggled through: the value is escaped first
+   * and only these exact tags are handed back.
+   *
+   * Applied AFTER escaping — including after $html, where the anchors are
+   * already real tags and are left untouched.
+   */
+  const INLINE_TAGS = /&lt;(\/?(?:em|strong|i|b|br|u|sup|sub)\s*\/?)&gt;/gi;
+
+  const allowInline = html => String(html ?? '').replace(INLINE_TAGS, '<$1>');
 
   const HOSTNAME_LIKE = /^[a-z0-9-]+(\.[a-z0-9-]+)+([/?#]|$)/i;
 
@@ -328,6 +341,7 @@
     getSheet,
     getRow,
     esc,
+    allowInline,
     normalizeUrl,
     isValidUrl,
     bool,

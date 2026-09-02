@@ -70,13 +70,21 @@
   const formatAnswer = (row) => {
     const rich = row.$html?.answer;
 
-    if (rich) return paragraphs(rich);
+    // allowInline runs on both paths: a client may type <em> into a cell that
+    // also carries a Sheets link, and the $html path escapes typed tags too.
+    if (rich) return BC.allowInline(paragraphs(rich));
 
-    return paragraphs(BC.esc(row.answer)).replace(
+    const escaped = paragraphs(BC.esc(row.answer)).replace(
       /<p>([\s\S]*?)<\/p>/g,
       (_, inner) => `<p>${linkify(inner)}</p>`
     );
+
+    return BC.allowInline(escaped);
   };
+
+  /** Questions get the same treatment — <em> is being typed into column A. */
+  const formatQuestion = row =>
+    BC.allowInline(row.$html?.question || BC.esc(row.question));
 
   const renderItem = (row, index) => {
     const questionId = `bc-faq-q-${index}`;
@@ -93,7 +101,7 @@
             aria-expanded="false"
             aria-controls="${answerId}"
           >
-            <span class="bc-faq__label">${BC.esc(row.question)}</span>
+            <span class="bc-faq__label">${formatQuestion(row)}</span>
             <span class="bc-faq__icon" aria-hidden="true"></span>
           </button>
         </${HEADING}>

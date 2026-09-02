@@ -25,10 +25,6 @@
   // A Google Docs share link, in any of the shapes people paste.
   const DOC_URL = /docs\.google\.com\/document\/d\/(?:e\/)?([\w-]{16,})/;
 
-  // Inline tags allowed through from a typed cell. No attributes, so there is
-  // nothing to smuggle: everything is escaped first and only these come back.
-  const INLINE_TAGS = /&lt;(\/?(?:em|strong|i|b|br)\s*\/?)&gt;/gi;
-
   let root = null;
   let dialog = null;
   let people = [];
@@ -40,8 +36,7 @@
    * ------------------------------------------------------------------ */
 
   const richText = value =>
-    BC.esc(value)
-      .replace(INLINE_TAGS, '<$1>')
+    BC.allowInline(BC.esc(value))
       .split(/\n{2,}/)
       .map(block => block.trim().replace(/\n/g, '<br>'))
       .filter(Boolean)
