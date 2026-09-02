@@ -183,39 +183,61 @@
   opacity: 0.6;
 }
 
-.bc-creative__bio {
+.bc-creative__bio-wrap {
+    position: relative;
     height: 250px;
-    
-    /* Always reserve/show scrollbar when browser permits */
-    overflow-y: scroll;
+}
+
+.bc-creative__bio {
+    height: 100%;
+    overflow-y: auto;
     overflow-x: hidden;
-    scrollbar-gutter: stable;
-    
-    padding-right: 25px;
+    padding-right: 35px;
 
-    /* Firefox */
-    scrollbar-width: auto;
-    scrollbar-color: #062449 #f5f37e;
+    /* Hide native scrollbar */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
-/* Chrome / Safari / Edge */
 .bc-creative__bio::-webkit-scrollbar {
-    width: 18px;
+    display: none;
 }
 
-.bc-creative__bio::-webkit-scrollbar-track {
+/* Custom scrollbar track */
+.bc-creative__scrollbar {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 15px;
+    height: 100%;
     background: #f5f37e;
-    border-radius: 0;
+    cursor: pointer;
+    touch-action: none;
 }
 
-.bc-creative__bio::-webkit-scrollbar-thumb {
+/* Custom scrollbar thumb */
+.bc-creative__scrollbar-thumb {
+    position: absolute;
+    top: 0;
+    left: 3px;
+    width: 9px;
+    min-height: 20px;
     background: #062449;
-    border-radius: 0;
-    border: 4px solid #f5f37e;
+    border-radius: 10px;
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+    will-change: transform;
 }
 
-.bc-creative__bio::-webkit-scrollbar-thumb:hover {
-    background: #062449;
+.bc-creative__scrollbar-thumb.is-dragging {
+    cursor: grabbing;
+}
+
+/* No scrollbar needed when content fits */
+.bc-creative__scrollbar.is-disabled {
+    opacity: 0;
+    pointer-events: none;
 }
 
 @media (max-width: 990px) {
