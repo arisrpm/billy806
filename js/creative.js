@@ -29,6 +29,11 @@
   let dialog = null;
   let people = [];
 
+  // Only people with a bio open a modal, so the arrows step through those.
+  // Paging into someone without one would land on an empty card.
+  let bios = [];
+  let current = -1;
+
   const bioCache = new Map();
 
   /* ------------------------------------------------------------------ *
@@ -303,6 +308,18 @@
           class="bc-creative__close"
           type="button"
           aria-label="Close"
+        ></button>
+
+        <button
+          class="bc-creative__nav bc-creative__nav--prev"
+          type="button"
+          aria-label="Previous person"
+        ></button>
+
+        <button
+          class="bc-creative__nav bc-creative__nav--next"
+          type="button"
+          aria-label="Next person"
         ></button>
 
         <div class="bc-creative__detail">
@@ -754,13 +771,22 @@
    * Modal
    * ------------------------------------------------------------------ */
 
-  const open = person => {
-    if (
-      !person ||
-      !person.bio
-    ) {
-      return;
-    }
+  /**
+   * Paints one person into the modal. Separate from open() so the arrows can
+   * swap the contents without closing and reopening the dialog, which would
+   * lose focus and replay the backdrop.
+   */
+  const show = index => {
+    const person = bios[index];
+    if (!person) return;
+
+    current = index;
+
+    // Not continuous: stop at both ends rather than wrapping. Real disabled
+    // buttons, so keyboard and screen readers get the state for free.
+    dialog.querySelector('.bc-creative__nav--prev').disabled = index === 0;
+    dialog.querySelector('.bc-creative__nav--next').disabled =
+      index === bios.length - 1;
 
     dialog.dataset.name =
       person.name;
@@ -781,6 +807,19 @@
     role.hidden =
       !person.role;
 
+    // A new bio starts at the top, not wherever the last one was scrolled to.
+    const bio = dialog.querySelector('.bc-creative__bio');
+    if (bio) bio.scrollTop = 0;
+
+    setBio(person);
+  };
+
+  const open = person => {
+    const index = bios.indexOf(person);
+    if (index === -1) return;
+
+    show(index);
+
     // Native <dialog>: focus trap, Escape, backdrop and focus restoration on
     // close all come free, so there is no hand-rolled trap to get wrong.
     dialog.showModal();
@@ -789,8 +828,14 @@
     requestAnimationFrame(
       updateScrollbar
     );
+  };
 
-    setBio(person);
+  const step = delta => {
+    const next = current + delta;
+    if (next < 0 || next > bios.length - 1) return;
+
+    show(next);
+    requestAnimationFrame(updateScrollbar);
   };
 
   /* ------------------------------------------------------------------ *
@@ -829,9 +874,26 @@
           )
         ) {
           dialog.close();
+          return;
+        }
+
+        if (event.target.closest('.bc-creative__nav--prev')) {
+          step(-1);
+          return;
+        }
+
+        if (event.target.closest('.bc-creative__nav--next')) {
+          step(1);
         }
       }
     );
+
+    // Left/right page between people while the modal is open. Escape is
+    // already handled natively by <dialog>.
+    dialog.addEventListener('keydown', event => {
+      if (event.key === 'ArrowLeft') step(-1);
+      if (event.key === 'ArrowRight') step(1);
+    });
 
     /**
      * Clicking the backdrop closes.
@@ -901,6 +963,8 @@
           ),
           bio: row.bio || '',
         }));
+
+      bios = people.filter(person => person.bio);
 
       if (!people.length) {
         root.hidden = true;

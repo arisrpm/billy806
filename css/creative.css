@@ -127,6 +127,48 @@
   cursor: pointer;
 }
 
+/* ---- prev / next ---- */
+
+.bc-creative__nav {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  transform: translateY(-50%);
+
+  width: 44px;
+  height: 44px;
+  padding: 0;
+
+  background: none;
+  border: 0;
+  color: var(--bc-card-edge);
+  cursor: pointer;
+}
+
+.bc-creative__nav--prev { left: 0.35rem; }
+.bc-creative__nav--next { right: 0.35rem; }
+
+/* Chevron drawn from two borders, so it scales with the button. */
+.bc-creative__nav::before {
+  content: '';
+  display: block;
+  width: 14px;
+  height: 14px;
+  margin: 0 auto;
+  border-top: 3px solid currentColor;
+  border-right: 3px solid currentColor;
+}
+
+.bc-creative__nav--prev::before { transform: rotate(-135deg); }
+.bc-creative__nav--next::before { transform: rotate(45deg); }
+
+/* Ends of the run. Kept visible rather than hidden so the control does not
+   jump position as you page through. */
+.bc-creative__nav:disabled {
+  opacity: 0.2;
+  cursor: default;
+}
+
 .bc-creative__close::before,
 .bc-creative__close::after {
   content: '';
