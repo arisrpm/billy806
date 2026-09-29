@@ -29,7 +29,7 @@
   background-size: cover;
   background-repeat: no-repeat;
 
-  padding: var(--bc-note-gap) 1.25rem clamp(2rem, 6vw, 5rem);
+  padding: var(--bc-note-gap) 1.25rem clamp(2rem, 6vw, 2rem);
 }
 
 .bc-notices__grid {
@@ -252,14 +252,15 @@
 
 .bc-location__inner p {
     margin-bottom: 0;
-    font-size: 24px;
-    font-weight: 600;
+    font-size: 26px;
+    font-weight: 400;
 }
 
 /* A full-width row inside the location grid — one item instead of two. */
 .bc-location__inner>div.single {
     flex-basis: calc(100% - 0px);
     text-align: left;
+    padding: 2rem;
 }
 
 .bc-location__inner>div.single h2 {
