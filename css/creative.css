@@ -102,7 +102,11 @@
   width: min(74rem, 92vw);
 
   /* The thin cream margin outside the navy rule, as on the card. */
-  padding: clamp(0.5rem, 1.4vw, 2rem);
+  /* The cream paper margin outside the navy rule. Generous on purpose: the
+     torn strip is ~38px tall, and on a 14px margin it read as a bar sitting
+     on the card rather than the card's own edge. The middle term drives this
+     at normal widths — 1.4vw was only ~14px at 1024px. */
+  padding: clamp(1.25rem, 3vw, 2.25rem);
 
   background: var(--bc-card-paper);
   color: var(--bc-card-edge);
