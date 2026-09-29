@@ -299,19 +299,6 @@
         class="bc-creative__dialog"
         aria-labelledby="bc-creative-name"
       >
-        <!--
-          The torn edge is its own element, not a background on the dialog.
-          That lets the paper live in .bc-creative__body, which STARTS below
-          the strip — a background on the dialog sits behind the tears and
-          fills them in. It also leaves somewhere to hang the other edges.
-        -->
-        <span
-          class="bc-creative__edge bc-creative__edge--top"
-          aria-hidden="true"
-        ></span>
-
-        <div class="bc-creative__body">
-
         <button
           class="bc-creative__close"
           type="button"
@@ -348,8 +335,6 @@
             </div>
 
           </div>
-        </div>
-
         </div>
       </dialog>
     `;

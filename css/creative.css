@@ -89,55 +89,23 @@
 /* ---- modal ---- */
 
 .bc-creative__dialog {
-  /* Sampled from the bottom row of top-modal.png so the strip and the card
-     are the same paper — #f7ece7 left a visible tonal seam at the join. */
+  /* Matches the card artwork's paper. */
   --bc-card-paper: #ffeeee;
   --bc-card-edge: var(--bc-navy, #062449);
 
-  /* Torn top edge. Set to none to drop it. */
-  --bc-card-top: url(https://images.squarespace-cdn.com/content/69ced95badea255402fe4b3b/f4aed408-5010-4021-8434-5fbf58220f1a/top-modal.png);
-  --bc-card-top-ratio: 2030 / 83;
-
-  /* Cream paper margin between the navy rule and the card's outer edge. */
-  --bc-card-margin: clamp(1.25rem, 3vw, 2.25rem);
-
   width: min(74rem, 92vw);
 
-  /* The dialog is only a positioning box now — the paper belongs to
-     .bc-creative__body, which begins below the torn strip. */
-  padding: 0;
-  background: none;
-  border: 0;
-  color: var(--bc-card-edge);
+  /* Cream paper margin outside the navy rule. */
+  padding: clamp(1.25rem, 3vw, 2.25rem);
 
-  box-shadow: 0 18px 40px #000000;
-  overflow: visible;
-}
-
-
-/* Full-bleed across the top of the card. aspect-ratio keeps the tear from
-   stretching, since nothing below needs to know its height any more. */
-.bc-creative__edge {
-  display: block;
-  width: 100%;
-  background: center / 100% 100% no-repeat;
-}
-
-.bc-creative__edge--top {
-  aspect-ratio: var(--bc-card-top-ratio);
-  background-image: var(--bc-card-top);
-
-  /* Hairline overlap so subpixel rounding cannot leave a seam. */
-  margin-bottom: -1px;
-}
-
-/* The paper. Starts below the strip, so it can never sit behind the tears. */
-.bc-creative__body {
-  position: relative;
-  padding: var(--bc-card-margin);
   background: var(--bc-card-paper);
-  border-radius: 0 0 clamp(8px, 1vw, 16px) clamp(8px, 1vw, 16px);
+  color: var(--bc-card-edge);
+  border: 0;
+
+  border-radius: clamp(8px, 1vw, 16px);
+  box-shadow: 0 18px 40px #000000;
 }
+
 
 .bc-creative__dialog::backdrop {
   background: rgb(0 0 0 / 60%);
@@ -181,26 +149,20 @@
     padding: clamp(1.25rem,3vw,2.5rem);
     background: var(--bc-card-paper);
 
-    /* Above the ring: positioned children paint after in-flow content, so
-       without this the overlay would cover the bio. */
     position: relative;
-    z-index: 1;
 }
 
-/* The navy rule, as artwork rather than a CSS border.
-   Lives on the BODY, not on .bc-creative__detail. A negative z-index on a
-   descendant paints behind every ancestor background, and .bc-creative__body
-   is opaque cream — the ring simply vanished underneath it. On the body it
-   paints above that cream, and .bc-creative__detail then covers its middle. */
-.bc-creative__body::before {
+.bc-creative__detail::before {
     content: '';
     position: absolute;
-    /* 15px proud of the content box, matching the old inset: -15px. */
-    inset: calc(var(--bc-card-margin) - 15px);
+    inset: -15px;
     background-image: url('https://images.squarespace-cdn.com/content/69ced95badea255402fe4b3b/d9028a1c-a468-4cdb-b550-a522f9b8a2c3/border-overlay.jpg');
     background-size: cover;
     background-position: center;
     pointer-events: none;
+    z-index: -1;
+    height: 100%;
+    padding-bottom: 30px;
 }
 
 .bc-creative__detail-text {
