@@ -89,21 +89,48 @@
 /* ---- modal ---- */
 
 .bc-creative__dialog {
-  --bc-card-paper: #f7ece7;
+  /* Sampled from the bottom row of top-modal.png so the strip and the card
+     are the same paper — #f7ece7 left a visible tonal seam at the join. */
+  --bc-card-paper: #ffeeee;
   --bc-card-edge: var(--bc-navy, #062449);
+
+  /* Torn top edge. 2030x83 with alpha, so the ratio is fixed and the height
+     follows the width. Set --bc-card-top to none to drop it. */
+  --bc-card-top: url(https://images.squarespace-cdn.com/content/69ced95badea255402fe4b3b/f4aed408-5010-4021-8434-5fbf58220f1a/top-modal.png);
+  --bc-card-top-ratio: 2030 / 83;
 
   width: min(74rem, 92vw);
 
   /* The thin cream margin outside the navy rule, as on the card. */
-  padding: clamp(0.5rem, 1.4vw, 0.9rem);
+  padding: clamp(0.5rem, 1.4vw, 2rem);
 
   background: var(--bc-card-paper);
   color: var(--bc-card-edge);
   border: 0;
 
-  /* Softly rounded, as the printed card is, and lifted off the backdrop. */
-  border-radius: clamp(8px, 1vw, 16px);
-  box-shadow: 0 18px 40px rgb(0 0 0 / 45%);
+  /* Square across the top — the torn strip supplies that edge now. */
+  border-radius: 0 0 clamp(8px, 1vw, 16px) clamp(8px, 1vw, 16px);
+  box-shadow: 0 18px 40px #000000;
+
+  /* The strip hangs above the box, so it must not be clipped. */
+  overflow: visible;
+}
+
+/* Sits ABOVE the card, not over it. Overlaying would put the dialog's own
+   cream behind the cut-outs and fill them in; hanging it off the top edge
+   lets the backdrop show through the tears, which is the whole effect. */
+.bc-creative__dialog::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 100%;
+
+  aspect-ratio: var(--bc-card-top-ratio);
+  background: var(--bc-card-top) center bottom / 100% 100% no-repeat;
+
+  /* Hairline overlap, so subpixel rounding cannot leave a seam. */
+  margin-bottom: -1px;
 }
 
 .bc-creative__dialog::backdrop {
@@ -142,13 +169,26 @@
 /* cream margin -> navy rule -> cream panel, nested the way the card is
    printed. The border does the middle layer, so no extra element is needed. */
 .bc-creative__detail {
-  display: flex;
-  align-items: flex-start;
-  gap: clamp(1.5rem, 4vw, 3rem);
+    display: flex;
+    align-items: flex-start;
+    gap: clamp(1.5rem,4vw,3rem);
+    padding: clamp(1.25rem,3vw,2.5rem);
+    background: var(--bc-card-paper);
+    position: relative;
+}
 
-  padding: clamp(1.25rem, 3vw, 2.5rem);
-  background: var(--bc-card-paper);
-  border: clamp(0.6rem, 1.8vw, 1.1rem) solid var(--bc-card-edge);
+.bc-creative__detail::before {
+    content: '';
+    position: absolute;
+    inset: -15px;
+    background-image: url('https://images.squarespace-cdn.com/content/69ced95badea255402fe4b3b/d9028a1c-a468-4cdb-b550-a522f9b8a2c3/border-overlay.jpg');
+    background-size: cover;
+    background-position: center;
+    z-index: 0;
+    pointer-events: none;
+    z-index: -1;
+    height: 100%;
+    padding-bottom: 30px;
 }
 
 .bc-creative__detail-text {
