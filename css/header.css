@@ -146,6 +146,20 @@
   text-transform: uppercase;  
 }
 
+/* With the menu open only the close button is needed — the centre text and
+   ticket button would compete with the nav behind them.
+
+   visibility, not display: none. The centre text can wrap to two lines, so
+   removing it from layout would shrink the bar, and --bc-header-height is
+   measured on resize rather than on every menu toggle. The panel is pinned at
+   `inset: var(--bc-header-height)`, so a stale value opens a gap above it
+   showing the page behind — the exact fault fixed below. Keeping the boxes
+   means the height never moves. It also drops them from the tab order. */
+.bc-menu-open .bc-header__cta,
+.bc-menu-open .bc-header__tickets {
+  visibility: hidden;
+}
+
 /* NO scroll lock here, deliberately.
    `overflow: hidden` on <html> or <body> makes them a scroll container, which
    kills `position: sticky` on any descendant — including this header. Opening
@@ -195,6 +209,13 @@
   .newsletter-block .newsletter-form-header {
     width: 100%;
   }
+}
+
+@media (max-width: 540px)  {
+  .bc-header__cta {
+      font-size: 4.2vw;
+      line-height: 1.2;
+  }  
 }
 
 @media (max-width: 445px)  {

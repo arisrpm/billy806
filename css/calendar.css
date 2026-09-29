@@ -228,8 +228,11 @@
  * ------------------------------------------------------------------ */
 
 @media (max-width: 680px) {
+  #calendar .container h1 {
+      font-size: 38px;line-height: 1;
+  }
   #calendar h2 {
-      font-size: 56px;
+      font-size: 34px;
       width: auto;
       min-width: auto;      
   }
