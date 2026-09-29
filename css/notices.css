@@ -211,6 +211,7 @@
 .bc-location {
     position: relative;
     margin-bottom: 1rem;
+    padding: var(--bc-note-gap) 1.25rem clamp(2rem,6vw,2rem)
 }
 
 .bc-location__inner {
