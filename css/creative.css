@@ -100,6 +100,10 @@
   background: var(--bc-card-paper);
   color: var(--bc-card-edge);
   border: 0;
+
+  /* Softly rounded, as the printed card is, and lifted off the backdrop. */
+  border-radius: clamp(8px, 1vw, 16px);
+  box-shadow: 0 18px 40px rgb(0 0 0 / 45%);
 }
 
 .bc-creative__dialog::backdrop {
@@ -145,6 +149,7 @@
   padding: clamp(1.25rem, 3vw, 2.5rem);
   background: var(--bc-card-paper);
   border: clamp(0.6rem, 1.8vw, 1.1rem) solid var(--bc-card-edge);
+  border-radius: clamp(4px, 0.6vw, 9px);
 }
 
 .bc-creative__detail-text {
@@ -179,6 +184,14 @@
   margin: 0 0 1em;
   font-size: 18px;
   font-weight: 500;
+  line-height: 1.45;
+
+  /* The comp breaks words across lines — "cre-ation", "animat-ed",
+     "oppo-site". That is hyphenation, not manual copy breaks, and it needs a
+     lang attribute on <html> to pick the right dictionary. Squarespace sets
+     lang="en-US", so this works there. */
+  hyphens: auto;
+  -webkit-hyphens: auto;
 }
 
 .bc-creative__bio p:last-child {
