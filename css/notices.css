@@ -294,6 +294,9 @@
   .bc-location__inner {
     flex-direction: column;
   }
+  .bc-notices {
+    padding-bottom: 10px;
+  }
 }
 
 @media (max-width: 580px) {

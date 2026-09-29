@@ -190,26 +190,23 @@
 /* The card is min(74rem, 92vw), so below roughly this width there is not
    44px of clear space either side and the arrows would sit off-screen.
    Bring them back inside the card, where the paper colour would vanish. */
+/* A 44px button needs ~48px of clear space either side, and the card is
+   min(74rem, 92vw) — that runs out at about 1180px. Shrinking to 34px keeps
+   them outside all the way down to 990, rather than jumping inside early. */
 @media (max-width: 1180px) {
-  .bc-creative__nav--prev {
-    right: auto;
-    left: 0.25rem;
-    margin-right: 0;
-  }
-
-  .bc-creative__nav--next {
-    left: auto;
-    right: 0.25rem;
-    margin-left: 0;
-  }
-
   .bc-creative__nav {
-    color: var(--bc-card-edge);
+    width: 34px;
+    height: 34px;
   }
 
   .bc-creative__nav::before {
-    filter: none;
+    width: 12px;
+    height: 12px;
+    border-width: 2px;
   }
+
+  .bc-creative__nav--prev { margin-right: 0.15rem; }
+  .bc-creative__nav--next { margin-left: 0.15rem; }
 }
 
 .bc-creative__close::before,
@@ -364,7 +361,36 @@
 
 @media (max-width: 990px) {
   #bc-creative {
-    width: 715px;
+    padding: 0 25px;
+  }
+
+  /* Below this there is under 38px of clear space, so the arrows come inside
+     the card. Cream on cream would vanish, hence the colour swap. */
+  .bc-creative__nav--prev {
+    right: auto;
+    left: 0.25rem;
+    margin-right: 0;
+  }
+
+  .bc-creative__nav--next {
+    left: auto;
+    right: 0.25rem;
+    margin-left: 0;
+  }
+
+  .bc-creative__nav {
+    color: var(--bc-card-edge);
+  }
+
+  .bc-creative__nav::before {
+    filter: none;
+  }
+
+  /* 22px is too heavy once the card narrows — the measure gets short and the
+     bio turns into a column of stubs. */
+  .bc-creative__bio p {
+    font-size: 17px;
+    line-height: 1.4;
   }
 }
 
@@ -377,7 +403,6 @@
     width: 320px;
   }
   #bc-creative {
-        width: 305px;
   }
 }
 
