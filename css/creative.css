@@ -97,7 +97,11 @@
   /* Torn top edge. 2030x83 with alpha, so the ratio is fixed and the height
      follows the width. Set --bc-card-top to none to drop it. */
   --bc-card-top: url(https://images.squarespace-cdn.com/content/69ced95badea255402fe4b3b/f4aed408-5010-4021-8434-5fbf58220f1a/top-modal.png);
-  --bc-card-top-ratio: 2030 / 83;
+  /* Explicit height, not an aspect ratio: the paper layer below has to be
+     offset by exactly this much, and calc() cannot derive a height from an
+     aspect. At the modal's usual width the natural height is ~38px, so the
+     stretch is imperceptible on a torn edge. */
+  --bc-card-top-h: 40px;
 
   width: min(74rem, 92vw);
 
@@ -107,8 +111,21 @@
      on the card rather than the card's own edge. The middle term drives this
      at normal widths — 1.4vw was only ~14px at 1024px. */
   padding: clamp(1.25rem, 3vw, 2.25rem);
+  padding-top: calc(var(--bc-card-top-h) + clamp(0.5rem, 1.2vw, 1rem));
 
-  background: var(--bc-card-paper);
+  /* Two layers: the torn strip pinned to the top, and the paper filling
+     everything BELOW it. Painting the paper full-height would sit behind the
+     tears and fill them in. */
+  background-color: transparent;
+  background-image:
+    var(--bc-card-top),
+    linear-gradient(var(--bc-card-paper), var(--bc-card-paper));
+  background-repeat: no-repeat, no-repeat;
+  background-position: top center, bottom center;
+  background-size:
+    100% var(--bc-card-top-h),
+    100% calc(100% - var(--bc-card-top-h) + 1px);
+
   color: var(--bc-card-edge);
   border: 0;
 
@@ -120,22 +137,6 @@
   overflow: visible;
 }
 
-/* Sits ABOVE the card, not over it. Overlaying would put the dialog's own
-   cream behind the cut-outs and fill them in; hanging it off the top edge
-   lets the backdrop show through the tears, which is the whole effect. */
-.bc-creative__dialog::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 100%;
-
-  aspect-ratio: var(--bc-card-top-ratio);
-  background: var(--bc-card-top) center bottom / 100% 100% no-repeat;
-
-  /* Hairline overlap, so subpixel rounding cannot leave a seam. */
-  margin-bottom: -1px;
-}
 
 .bc-creative__dialog::backdrop {
   background: rgb(0 0 0 / 60%);
