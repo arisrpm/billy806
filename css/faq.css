@@ -11,6 +11,13 @@
   padding: 0 45px;
 }
 
+.bc-faq-belt {
+    position: relative;
+    max-width: 100%;
+    text-align: center;
+    padding-bottom: 10vw;
+}
+
 /* Reserve height before the sheet resolves so the sections below don't jump.
    Removed by faq.js once the list renders. */
 #bc-faq.is-loading {
