@@ -1,23 +1,50 @@
-<!-- ==========================================================================
-     Squarespace → the information section → Code Block
-     Place this section AFTER the calendar.
+<!--
+  Squarespace → the notices section → Code Block
+  Place AFTER the calendar. The wood is the Squarespace SECTION background.
 
-     Static content. No JavaScript, no Google Sheet — the styling ships in
-     bc.min.css and this markup is the whole component.
+  Five cards in a two-column grid:
+    row 1   map            | box office
+    row 2   previews date  | digital lottery
+    row 3   phone-free (spans both)
 
-     The wood is best set as the Squarespace SECTION background. If you would
-     rather it came from our CSS, drop this next to the block instead:
+  Order here is the order on screen. To move a card, move its block.
+  .bc-notice--wide spans the full row; drop that class to make it a half card.
 
-       <style>
-         .bc-notices { --bc-notices-image: url(https://images.squarespace-cdn.com/.../wood.jpg); }
-       </style>
-
-     "PREVIEWS BEGIN OCT 1" is the one line here with a shelf life — it becomes
-     NOW PLAYING, then FINAL WEEKS. Edit it in this block when it changes.
-     ========================================================================== -->
+  This replaces BOTH the old .bc-notices and .bc-location sections — delete
+  the .bc-location block from the page when you paste this in.
+-->
 
 <section class="bc-notices">
-  <div class="bc-notices__inner">
+  <div class="bc-notices__grid">
+
+    <div class="bc-notice bc-notice--map">
+      <div class="bc-notice__map">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.137767661187!2d-73.98995202302548!3d40.75899453473575!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c2585442b83233%3A0xc8c6ebc18ac7fb43!2sImperial%20Theatre!5e0!3m2!1sen!2sus!4v1788115222035!5m2!1sen!2sus"
+          title="Imperial Theatre location"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+        ></iframe>
+      </div>
+    </div>
+
+    <div class="bc-notice bc-notice--boxoffice">
+      <p class="bc-notice__body">
+        Box Office Hours:<br>
+        TBD<br>
+        Group Tickets (10+)<br>
+        Call 866.302.0995<br>
+        <br>
+        Broadway Inbound
+      </p>
+
+      <a
+        class="bc-notice__button"
+        href="#"
+        target="_blank"
+        rel="noopener noreferrer"
+      >Get Group Tickets</a>
+    </div>
 
     <div class="bc-notice bc-notice--date">
       <p class="bc-notice__date">
@@ -26,7 +53,19 @@
       </p>
     </div>
 
-    <div class="bc-notice bc-notice--info">
+    <div class="bc-notice bc-notice--lottery">
+      <h2 class="bc-notice__heading">Digital Lottery</h2>
+      <p class="bc-notice__body">
+        A limited number of $45 tickets are available for each performance. The
+        lottery will open at 7 AM ET the day before each performance and close
+        at 2 PM ET that same day. Lottery seats may be partially obstructed.
+        Limit one entry per person per day, and limit of two tickets per entry.
+        To enter and for more specifics, please
+        <a class="bc-notice__link" href="#" target="_blank" rel="noopener noreferrer">click here</a>.
+      </p>
+    </div>
+
+    <div class="bc-notice bc-notice--wide">
       <h2 class="bc-notice__heading">Phone-Free Space</h2>
       <p class="bc-notice__body">
         To create a respectful theatrical experience for the performer and all
@@ -34,12 +73,7 @@
         Theatre staff and will be unlocked at the end of the show. Guests
         maintain possession of their devices at all times. For more
         information, please visit
-        <a
-          class="bc-notice__link"
-          href="https://overyondr.com/faq"
-          target="_blank"
-          rel="noopener noreferrer"
-        >overyondr.com/faq</a>.
+        <a class="bc-notice__link" href="https://overyondr.com/faq" target="_blank" rel="noopener noreferrer">overyondr.com/faq</a>.
       </p>
     </div>
 
