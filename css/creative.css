@@ -132,11 +132,26 @@
 
 /* ---- prev / next ---- */
 
+/* In the header beside the role and name, not floating at the card's edges.
+   Positioning them outside meant juggling two breakpoints just to keep 44px
+   of clear space, and on a phone they sat where the thumb cannot reach. In
+   flow they need none of that. */
+.bc-creative__head {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.5rem, 1.5vw, 1rem);
+
+  /* Clears the close button in the corner. */
+  padding-right: 2.75rem;
+}
+
+.bc-creative__titles {
+  flex: 1;
+  min-width: 0;
+}
+
 .bc-creative__nav {
-  position: absolute;
-  top: 50%;
-  z-index: 2;
-  transform: translateY(-50%);
+  flex: 0 0 auto;
 
   width: 44px;
   height: 44px;
@@ -144,28 +159,11 @@
 
   background: none;
   border: 0;
-
-  /* The card's own paper colour, so they read as part of the set against the
-     dark backdrop rather than as browser chrome. */
-  color: var(--bc-card-paper);
+  color: var(--bc-card-edge);
   cursor: pointer;
 }
 
-/* Outside the card. 100% of the dialog's width puts the button's inner edge
-   flush to the card edge; the margin pushes it clear. */
-.bc-creative__nav--prev {
-  right: 100%;
-  margin-right: clamp(0.25rem, 1vw, 0.75rem);
-}
-
-.bc-creative__nav--next {
-  left: 100%;
-  margin-left: clamp(0.25rem, 1vw, 0.75rem);
-}
-
-/* Chevron drawn from two borders, so it scales with the button.
-   drop-shadow, not box-shadow: the button box is transparent, so box-shadow
-   would outline an invisible rectangle. drop-shadow follows the glyph. */
+/* Chevron drawn from two borders, so it scales with the button. */
 .bc-creative__nav::before {
   content: '';
   display: block;
@@ -174,14 +172,13 @@
   margin: 0 auto;
   border-top: 3px solid currentColor;
   border-right: 3px solid currentColor;
-  filter: drop-shadow(0 2px 3px rgb(0 0 0 / 55%));
 }
 
 .bc-creative__nav--prev::before { transform: rotate(-135deg); }
 .bc-creative__nav--next::before { transform: rotate(45deg); }
 
-/* Ends of the run. Kept visible rather than hidden so the control does not
-   jump position as you page through. */
+/* Ends of the run. Kept visible rather than hidden so the row does not
+   reflow as you page through. */
 .bc-creative__nav:disabled {
   opacity: 0.25;
   cursor: default;
@@ -190,24 +187,6 @@
 /* The card is min(74rem, 92vw), so below roughly this width there is not
    44px of clear space either side and the arrows would sit off-screen.
    Bring them back inside the card, where the paper colour would vanish. */
-/* A 44px button needs ~48px of clear space either side, and the card is
-   min(74rem, 92vw) — that runs out at about 1180px. Shrinking to 34px keeps
-   them outside all the way down to 990, rather than jumping inside early. */
-@media (max-width: 1180px) {
-  .bc-creative__nav {
-    width: 34px;
-    height: 34px;
-  }
-
-  .bc-creative__nav::before {
-    width: 12px;
-    height: 12px;
-    border-width: 2px;
-  }
-
-  .bc-creative__nav--prev { margin-right: 0.15rem; }
-  .bc-creative__nav--next { margin-left: 0.15rem; }
-}
 
 .bc-creative__close::before,
 .bc-creative__close::after {
@@ -362,28 +341,6 @@
 @media (max-width: 990px) {
   #bc-creative {
     padding: 0 25px;
-  }
-
-  /* Below this there is under 38px of clear space, so the arrows come inside
-     the card. Cream on cream would vanish, hence the colour swap. */
-  .bc-creative__nav--prev {
-    right: auto;
-    left: 0.25rem;
-    margin-right: 0;
-  }
-
-  .bc-creative__nav--next {
-    left: auto;
-    right: 0.25rem;
-    margin-left: 0;
-  }
-
-  .bc-creative__nav {
-    color: var(--bc-card-edge);
-  }
-
-  .bc-creative__nav::before {
-    filter: none;
   }
 
   /* 22px is too heavy once the card narrows — the measure gets short and the

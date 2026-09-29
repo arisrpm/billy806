@@ -310,28 +310,35 @@
           aria-label="Close"
         ></button>
 
-        <button
-          class="bc-creative__nav bc-creative__nav--prev"
-          type="button"
-          aria-label="Previous person"
-        ></button>
-
-        <button
-          class="bc-creative__nav bc-creative__nav--next"
-          type="button"
-          aria-label="Next person"
-        ></button>
 
         <div class="bc-creative__detail">
 
           <div class="bc-creative__detail-text">
 
-            <p class="bc-creative__role"></p>
+            <div class="bc-creative__head">
 
-            <h3
-              class="bc-creative__name"
-              id="bc-creative-name"
-            ></h3>
+              <button
+                class="bc-creative__nav bc-creative__nav--prev"
+                type="button"
+                aria-label="Previous person"
+              ></button>
+
+              <div class="bc-creative__titles">
+                <p class="bc-creative__role"></p>
+
+                <h3
+                  class="bc-creative__name"
+                  id="bc-creative-name"
+                ></h3>
+              </div>
+
+              <button
+                class="bc-creative__nav bc-creative__nav--next"
+                type="button"
+                aria-label="Next person"
+              ></button>
+
+            </div>
 
             <div class="bc-creative__bio-wrap">
 
