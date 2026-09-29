@@ -149,7 +149,6 @@
   padding: clamp(1.25rem, 3vw, 2.5rem);
   background: var(--bc-card-paper);
   border: clamp(0.6rem, 1.8vw, 1.1rem) solid var(--bc-card-edge);
-  border-radius: clamp(4px, 0.6vw, 9px);
 }
 
 .bc-creative__detail-text {
@@ -159,7 +158,7 @@
 
 .bc-creative__name {
   margin: 0;
-  font-size: clamp(1.75rem, 4vw, 3rem);
+  font-size: clamp(1.75rem, 4vw, 5rem);
   font-weight: 700;
   text-transform: uppercase;
   line-height: 1.05;
@@ -172,8 +171,9 @@
 }
 
 .bc-creative__role {
-  margin: 0 0 15px;
-  font-size: clamp(1.125rem, 2vw, 1.5rem);
+  text-transform: uppercase;
+  margin: 0;
+  font-size: clamp(1.125rem, 2vw, 2.5rem);
 }
 
 .bc-creative__role[hidden] {
@@ -182,7 +182,7 @@
 
 .bc-creative__bio p {
   margin: 0 0 1em;
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 500;
   line-height: 1.45;
 
