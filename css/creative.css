@@ -161,7 +161,10 @@
   border: 0;
   color: var(--bc-card-edge);
   cursor: pointer;
+  order: 3;
 }
+
+
 
 /* Chevron drawn from two borders, so it scales with the button. */
 .bc-creative__nav::before {
