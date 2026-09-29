@@ -159,6 +159,12 @@ h5 {
     display: block;
 }
 
+#calendar .calendar-ending img {
+    display: inline-block;
+    width: 20px;
+    margin: 0;
+}
+
 #calendar h2 {
     margin: 0;
     padding: 0;
@@ -175,7 +181,7 @@ h5 {
 }
 
 .calendar-ending {
-    width: 660px;
+    width: 685px;
     max-width: 100%;
     text-align: center;
     padding: 0 25px;

@@ -19,9 +19,11 @@
 /* ---- grid ---- */
 
 .bc-creative__grid {
+  --bc-creative-gap: clamp(1rem, 3vw, 2.5rem);
+
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
-  gap: clamp(1rem, 3vw, 2.5rem);
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--bc-creative-gap);
 
   max-width: var(--bc-max-width, 1400px);
   margin: 0 auto;
@@ -87,11 +89,16 @@
 /* ---- modal ---- */
 
 .bc-creative__dialog {
-  width: min(74rem, 92vw);
-  padding: clamp(1.5rem, 4vw, 3rem);
+  --bc-card-paper: #f7ece7;
+  --bc-card-edge: var(--bc-navy, #062449);
 
-  background: var(--bc-navy, #062449);
-  color: #fff;
+  width: min(74rem, 92vw);
+
+  /* The thin cream margin outside the navy rule, as on the card. */
+  padding: clamp(0.5rem, 1.4vw, 0.9rem);
+
+  background: var(--bc-card-paper);
+  color: var(--bc-card-edge);
   border: 0;
 }
 
@@ -101,8 +108,10 @@
 
 .bc-creative__close {
   position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
+  /* Clears the cream margin and the navy rule so it always lands on paper. */
+  top: clamp(1.75rem, 4.5vw, 3rem);
+  right: clamp(1.75rem, 4.5vw, 3rem);
+  z-index: 1;
 
   width: 44px;
   height: 44px;
@@ -119,27 +128,23 @@
   position: absolute;
   inset: 50% 25% auto;
 
-  height: 2px;
+  height: 3px;
   background: currentColor;
 }
 
 .bc-creative__close::before { transform: rotate(45deg); }
 .bc-creative__close::after  { transform: rotate(-45deg); }
 
+/* cream margin -> navy rule -> cream panel, nested the way the card is
+   printed. The border does the middle layer, so no extra element is needed. */
 .bc-creative__detail {
   display: flex;
   align-items: flex-start;
   gap: clamp(1.5rem, 4vw, 3rem);
-}
 
-.bc-creative__detail-photo {
-  flex: 0 0 clamp(10rem, 28%, 20rem);
-}
-
-.bc-creative__detail-photo img {
-  display: block;
-  width: 100%;
-  height: auto;
+  padding: clamp(1.25rem, 3vw, 2.5rem);
+  background: var(--bc-card-paper);
+  border: clamp(0.6rem, 1.8vw, 1.1rem) solid var(--bc-card-edge);
 }
 
 .bc-creative__detail-text {
@@ -153,7 +158,12 @@
   font-weight: 700;
   text-transform: uppercase;
   line-height: 1.05;
-  color: #fff !important;
+
+  /* !important is required, not decorative: main.css sets
+     `h1, h2, h3 ... { color: var(--bc-text) !important }` to beat the
+     Squarespace theme, and nothing weaker can override it. Was #fff for the
+     old navy modal; the panel is cream now. */
+  color: var(--bc-card-edge, #062449) !important;
 }
 
 .bc-creative__role {
@@ -251,14 +261,50 @@
     flex-direction: column;
   }
 
-  .bc-creative__detail-photo {
-    flex: 0 0 auto;
-    max-width: 14rem;
-  }
   .bc-creative__rock {
     width: 320px;
   }
   #bc-creative {
         width: 305px;
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Lead card
+ * ------------------------------------------------------------------ */
+
+/* Billy sits alone on the first row.
+   Spans all three columns so nothing can flow up beside him — placing him in
+   the middle column only reserves one cell, and the next card fills the gap.
+   The width then pulls him back to exactly one column so the card keeps its
+   proportions instead of stretching to triple width. */
+.bc-creative__item:first-child {
+  grid-column: 1 / -1;
+  justify-self: center;
+  width: calc((100% - 2 * var(--bc-creative-gap)) / 3);
+}
+
+@media (max-width: 900px) {
+  .bc-creative__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* No middle column to sit in, so span the row and hold one column's width. */
+  .bc-creative__item:first-child {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: calc((100% - var(--bc-creative-gap)) / 2);
+  }
+}
+
+@media (max-width: 600px) {
+  .bc-creative__grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* One column: the lead card is already alone on its row. */
+  .bc-creative__item:first-child {
+    grid-column: auto;
+    width: auto;
   }
 }

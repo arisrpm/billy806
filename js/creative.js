@@ -219,7 +219,7 @@
         <img
           class="bc-creative__photo"
           src="${BC.esc(person.img)}"
-          alt="${BC.esc(person.name)}"
+          alt="${BC.esc(person.role ? `${person.name}, ${person.role}` : person.name)}"
           loading="lazy"
         >
       `
@@ -307,16 +307,14 @@
 
         <div class="bc-creative__detail">
 
-          <div class="bc-creative__detail-photo"></div>
-
           <div class="bc-creative__detail-text">
+
+            <p class="bc-creative__role"></p>
 
             <h3
               class="bc-creative__name"
               id="bc-creative-name"
             ></h3>
-
-            <p class="bc-creative__role"></p>
 
             <div class="bc-creative__bio-wrap">
 
@@ -766,18 +764,6 @@
 
     dialog.dataset.name =
       person.name;
-
-    dialog.querySelector(
-      '.bc-creative__detail-photo'
-    ).innerHTML =
-      person.img
-        ? `
-          <img
-            src="${BC.esc(person.img)}"
-            alt="${BC.esc(person.name)}"
-          >
-        `
-        : '';
 
     dialog.querySelector(
       '.bc-creative__name'
