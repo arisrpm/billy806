@@ -256,7 +256,7 @@
 
 .bc-location__inner p {
     margin-bottom: 0;
-    font-size: 26px;
+    font-size: clamp(.9rem,1.4vw,1.15rem);
     font-weight: 400;
 }
 
@@ -288,9 +288,6 @@
 }
 
 @media (max-width: 680px) {
-  .bc-location__inner p {
-    font-size: 14px;
-  }
   .bc-location__inner {
     flex-direction: column;
   }
