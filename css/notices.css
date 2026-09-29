@@ -200,6 +200,8 @@
   }
 }
 
+
+
 /* ------------------------------------------------------------------ *
  * LEGACY — the old two-section layout (.bc-location)
  *
@@ -211,7 +213,8 @@
 .bc-location {
     position: relative;
     margin-bottom: 1rem;
-    padding: var(--bc-note-gap) 1.25rem clamp(2rem,6vw,2rem)
+     --bc-note-gap: clamp(0.75rem, 1.6vw, 1.5rem);
+    padding: var(--bc-note-gap) 1.25rem clamp(2rem, 6vw, 2rem);
 }
 
 .bc-location__inner {
@@ -282,4 +285,26 @@
     white-space: nowrap;
     font-weight: bold;
     font-size: 20px;
+}
+
+@media (max-width: 680px) {
+  .bc-location__inner p {
+    font-size: 20px;
+  }
+  .bc-location__inner {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 580px) {
+  .bc-notices__inner {
+      flex-direction: column;
+  }
+  .bc-location__inner, .bc-notices__inner {
+      gap: 1em;
+  }
+  .bc-location {
+      padding-bottom: 0;
+      margin-bottom: 10px;
+  }  
 }
