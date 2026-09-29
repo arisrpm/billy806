@@ -94,49 +94,50 @@
   --bc-card-paper: #ffeeee;
   --bc-card-edge: var(--bc-navy, #062449);
 
-  /* Torn top edge. 2030x83 with alpha, so the ratio is fixed and the height
-     follows the width. Set --bc-card-top to none to drop it. */
+  /* Torn top edge. Set to none to drop it. */
   --bc-card-top: url(https://images.squarespace-cdn.com/content/69ced95badea255402fe4b3b/f4aed408-5010-4021-8434-5fbf58220f1a/top-modal.png);
-  /* Explicit height, not an aspect ratio: the paper layer below has to be
-     offset by exactly this much, and calc() cannot derive a height from an
-     aspect. At the modal's usual width the natural height is ~38px, so the
-     stretch is imperceptible on a torn edge. */
-  --bc-card-top-h: 40px;
+  --bc-card-top-ratio: 2030 / 83;
+
+  /* Cream paper margin between the navy rule and the card's outer edge. */
+  --bc-card-margin: clamp(1.25rem, 3vw, 2.25rem);
 
   width: min(74rem, 92vw);
 
-  /* The thin cream margin outside the navy rule, as on the card. */
-  /* The cream paper margin outside the navy rule. Generous on purpose: the
-     torn strip is ~38px tall, and on a 14px margin it read as a bar sitting
-     on the card rather than the card's own edge. The middle term drives this
-     at normal widths — 1.4vw was only ~14px at 1024px. */
-  padding: clamp(1.25rem, 3vw, 2.25rem);
-  padding-top: calc(var(--bc-card-top-h) + clamp(0.5rem, 1.2vw, 1rem));
-
-  /* Two layers: the torn strip pinned to the top, and the paper filling
-     everything BELOW it. Painting the paper full-height would sit behind the
-     tears and fill them in. */
-  background-color: transparent;
-  background-image:
-    var(--bc-card-top),
-    linear-gradient(var(--bc-card-paper), var(--bc-card-paper));
-  background-repeat: no-repeat, no-repeat;
-  background-position: top center, bottom center;
-  background-size:
-    100% var(--bc-card-top-h),
-    100% calc(100% - var(--bc-card-top-h) + 1px);
-
-  color: var(--bc-card-edge);
+  /* The dialog is only a positioning box now — the paper belongs to
+     .bc-creative__body, which begins below the torn strip. */
+  padding: 0;
+  background: none;
   border: 0;
+  color: var(--bc-card-edge);
 
-  /* Square across the top — the torn strip supplies that edge now. */
-  border-radius: 0 0 clamp(8px, 1vw, 16px) clamp(8px, 1vw, 16px);
   box-shadow: 0 18px 40px #000000;
-
-  /* The strip hangs above the box, so it must not be clipped. */
   overflow: visible;
 }
 
+
+/* Full-bleed across the top of the card. aspect-ratio keeps the tear from
+   stretching, since nothing below needs to know its height any more. */
+.bc-creative__edge {
+  display: block;
+  width: 100%;
+  background: center / 100% 100% no-repeat;
+}
+
+.bc-creative__edge--top {
+  aspect-ratio: var(--bc-card-top-ratio);
+  background-image: var(--bc-card-top);
+
+  /* Hairline overlap so subpixel rounding cannot leave a seam. */
+  margin-bottom: -1px;
+}
+
+/* The paper. Starts below the strip, so it can never sit behind the tears. */
+.bc-creative__body {
+  position: relative;
+  padding: var(--bc-card-margin);
+  background: var(--bc-card-paper);
+  border-radius: 0 0 clamp(8px, 1vw, 16px) clamp(8px, 1vw, 16px);
+}
 
 .bc-creative__dialog::backdrop {
   background: rgb(0 0 0 / 60%);
@@ -179,21 +180,27 @@
     gap: clamp(1.5rem,4vw,3rem);
     padding: clamp(1.25rem,3vw,2.5rem);
     background: var(--bc-card-paper);
+
+    /* Above the ring: positioned children paint after in-flow content, so
+       without this the overlay would cover the bio. */
     position: relative;
+    z-index: 1;
 }
 
-.bc-creative__detail::before {
+/* The navy rule, as artwork rather than a CSS border.
+   Lives on the BODY, not on .bc-creative__detail. A negative z-index on a
+   descendant paints behind every ancestor background, and .bc-creative__body
+   is opaque cream — the ring simply vanished underneath it. On the body it
+   paints above that cream, and .bc-creative__detail then covers its middle. */
+.bc-creative__body::before {
     content: '';
     position: absolute;
-    inset: -15px;
+    /* 15px proud of the content box, matching the old inset: -15px. */
+    inset: calc(var(--bc-card-margin) - 15px);
     background-image: url('https://images.squarespace-cdn.com/content/69ced95badea255402fe4b3b/d9028a1c-a468-4cdb-b550-a522f9b8a2c3/border-overlay.jpg');
     background-size: cover;
     background-position: center;
-    z-index: 0;
     pointer-events: none;
-    z-index: -1;
-    height: 100%;
-    padding-bottom: 30px;
 }
 
 .bc-creative__detail-text {
