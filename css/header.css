@@ -120,6 +120,9 @@
   padding: 2rem 3.25rem;
   overflow-y: auto;
 
+  /* Keeps a flick inside the panel from scrolling the page behind it. */
+  overscroll-behavior: contain;
+
   background: var(--bc-background);
 }
 
@@ -143,11 +146,14 @@
   text-transform: uppercase;  
 }
 
-/* Set by header.js while the menu is open. */
-.bc-menu-open,
-.bc-menu-open body {
-  overflow: hidden;
-}
+/* NO scroll lock here, deliberately.
+   `overflow: hidden` on <html> or <body> makes them a scroll container, which
+   kills `position: sticky` on any descendant — including this header. Opening
+   the menu dropped the bar to its static position at the top of the document,
+   out of view, and the page showed through the strip above the panel.
+   The panel is fixed and opaque, so the page moving behind it is invisible
+   anyway; overscroll-behavior on the panel stops a touch scroll chaining out
+   to the page at its ends. */
 
 /* ------------------------------------------------------------------ *
  * Narrow screens

@@ -289,13 +289,16 @@
 
 @media (max-width: 680px) {
   .bc-location__inner p {
-    font-size: 20px;
+    font-size: 14px;
   }
   .bc-location__inner {
     flex-direction: column;
   }
   .bc-notices {
     padding-bottom: 10px;
+  }
+  .bc-creative__bio p {
+    font-size: 15px;
   }
 }
 

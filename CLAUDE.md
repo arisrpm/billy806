@@ -137,6 +137,11 @@ Each of these cost time. They are not hypothetical.
 3. **`position: sticky` dies silently** if any ancestor has `overflow` other
    than `visible`/`clip`. `header.js` warns in dev when it finds one.
    `overflow-x: hidden` also forces `overflow-y: auto` — use `clip`.
+   This caught the menu too: a scroll lock of `overflow: hidden` on
+   `<html>`/`<body>` killed the sticky header whenever the menu opened, and
+   the page showed through above the panel. There is deliberately **no scroll
+   lock** — the panel is fixed and opaque, with `overscroll-behavior: contain`
+   to stop a touch flick chaining out to the page.
 4. **`hyphens: auto` does nothing without `lang` on `<html>`.** Squarespace
    sets it; the dev page sets `lang="en"`.
 5. **Google Docs export works from the browser** (CORS is fine), but Docs
