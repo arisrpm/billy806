@@ -20,13 +20,19 @@
   const SELECTOR = '.bc-header';
   const TAB = 'Header';
 
-  // Same-page anchors. These live here rather than in the Squarespace
-  // injection so nav changes are a git commit, not a CMS edit.
+  // The whole menu. Lives here rather than in the Squarespace injection so a
+  // nav change is a git commit, not a CMS edit.
+  //
+  //   { label, href }            same-page anchor — only renders if a section
+  //                              with that id exists on the page
+  //   { label, href, target }    any other URL; target adds rel="noopener
+  //                              noreferrer" automatically
   const NAV = [
     { label: 'About', href: '#about' },
     { label: 'Tickets', href: '#calendar' },
     { label: 'Creative', href: '#creative' },
     { label: 'FAQ', href: '#faq' },
+    { label: 'Merch', href: 'https://cgmnyc.co/860Merch', target: '_blank' },
   ];
 
   const FOCUSABLE = 'a[href], button:not([disabled])';
@@ -47,8 +53,15 @@
    * link the visitor can click. Items reappear on their own once the matching
    * id shows up, so NAV stays the single list to maintain.
    */
+  const isAnchor = item => item.href.startsWith('#');
+
   const availableNav = () => {
-    const present = NAV.filter(item => document.getElementById(item.href.slice(1)));
+    // The "section must exist" test applies to same-page anchors only.
+    // An external link has nothing on this page to match, and filtering it
+    // against getElementById would drop it every time.
+    const present = NAV.filter(
+      item => !isAnchor(item) || document.getElementById(item.href.slice(1))
+    );
 
     if (BC.config.debug && present.length !== NAV.length) {
       const missing = NAV.filter(item => !present.includes(item)).map(item => item.href);
@@ -69,15 +82,32 @@
     nav.hidden = true;
     nav.setAttribute('aria-label', 'Main');
 
-    const items = availableNav().map(
-      item => `
+    const items = availableNav().map(item => {
+      // Anchors stay exactly as authored; anything else is validated, so a
+      // typo in NAV cannot put javascript: into an href.
+      const href = isAnchor(item) ? item.href : BC.normalizeUrl(item.href);
+
+      if (!href) {
+        if (BC.config.debug) {
+          console.warn(`${MODULE} Nav item "${item.label}" has an unusable href:`, item.href);
+        }
+        return '';
+      }
+
+      // rel is not optional with target="_blank" — without it the new tab can
+      // reach back at this one through window.opener.
+      const target = item.target
+        ? ` target="${BC.esc(item.target)}" rel="noopener noreferrer"`
+        : '';
+
+      return `
         <li class="bc-header__nav-item">
-          <a class="bc-header__link" href="${BC.esc(item.href)}">
+          <a class="bc-header__link" href="${BC.esc(href)}"${target}>
             ${BC.esc(item.label)}
           </a>
         </li>
-      `
-    ).join('');
+      `;
+    }).join('');
 
     nav.innerHTML = `<ul class="bc-header__nav">${items}</ul>`;
 
