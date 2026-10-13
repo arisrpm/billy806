@@ -18,8 +18,8 @@ set -euo pipefail
 
 cd "$(dirname "$0")/.."
 
-CSS_FILES=(css/main.css css/header.css css/notices.css css/calendar.css css/creative.css css/faq.css)
-JS_FILES=(js/core.js js/header.js js/calendar.js js/creative.js js/faq.js js/main.js)
+CSS_FILES=(css/main.css css/header.css css/notices.css css/calendar.css css/creative.css css/quotes.css css/faq.css)
+JS_FILES=(js/core.js js/header.js js/calendar.js js/creative.js js/quotes.js js/faq.js js/main.js)
 
 build() {
   mkdir -p dist
@@ -132,5 +132,40 @@ if [[ "${1:-}" == "--watch" ]]; then
   done
 fi
 
+# A build that produces an empty or truncated bundle is worse than one that
+# fails: it commits and deploys cleanly and the site simply loses styling.
+# This has happened once — bc.min.css was committed at 0 bytes.
+verify() {
+  local bad=0
+
+  for f in dist/bc.min.css dist/bc.min.js; do
+    if [[ ! -s $f ]]; then
+      echo "BUILD FAILED: $f is empty" >&2
+      bad=1
+    elif [[ $(wc -c < "$f") -lt 2000 ]]; then
+      echo "BUILD FAILED: $f is only $(wc -c < "$f") bytes — truncated?" >&2
+      bad=1
+    fi
+  done
+
+  # One signature selector per stylesheet, each unique to that file — a bare
+  # "bc-creative" also appears in main.css, so it would pass even with
+  # creative.css dropped from the list.
+  for sel in bc-header__menu bc-notices__grid bc-calendar__grid bc-creative__dialog bc-quotes__list bc-faq__panel; do
+    grep -q "$sel" dist/bc.min.css || { echo "BUILD FAILED: no '$sel' rules in bc.min.css" >&2; bad=1; }
+  done
+
+  for name in BCHeader BCCalendar BCCreative BCQuotes BCFAQ; do
+    grep -q "window.$name=" dist/bc.min.js || { echo "BUILD FAILED: $name missing from bc.min.js" >&2; bad=1; }
+  done
+
+  if [[ $bad -ne 0 ]]; then
+    echo >&2
+    echo "dist/ left in place — do NOT commit it. Fix the above and rebuild." >&2
+    exit 1
+  fi
+}
+
 build
+verify
 summary

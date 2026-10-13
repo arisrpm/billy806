@@ -1,0 +1,76 @@
+/**
+ * BC Quotes — structure only.
+ *
+ * Colours, type and spacing are placeholders for the real design. The grid
+ * stacking and the fade are load-bearing.
+ */
+
+#bc-quotes.is-loading {
+  min-height: 8rem;
+}
+
+.bc-quotes {
+  max-width: var(--bc-max-width, 1400px);
+  margin: 0 auto;
+  padding: clamp(1.5rem, 4vw, 3rem) 1.25rem;
+  text-align: center;
+  color: var(--bc-text);
+}
+
+/* Every quote occupies the same grid cell, so they stack without absolute
+   positioning and the block sizes itself to the TALLEST one. That stops the
+   page jumping as quotes of different lengths rotate through. */
+.bc-quotes__list {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bc-quotes__item {
+  grid-area: 1 / 1;
+
+  opacity: 0;
+  transition: opacity var(--bc-quote-fade, 600ms) ease;
+
+  /* Hidden quotes must not swallow clicks aimed at the visible one. */
+  pointer-events: none;
+}
+
+.bc-quotes__item.is-current {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.bc-quotes__quote {
+  margin: 0;
+  font-size: clamp(1.25rem, 2.6vw, 2.25rem);
+  font-weight: 700;
+  line-height: 1.25;
+  text-wrap: balance;
+}
+
+/* Straight quotes in the sheet stay straight; curly ones are the client's.
+   Add the marks here instead if they should always appear:
+   .bc-quotes__quote::before { content: '\\201C'; } */
+
+.bc-quotes__publication {
+  display: block;
+  margin-top: 0.75em;
+
+  font-size: clamp(0.9rem, 1.4vw, 1.125rem);
+  font-style: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.bc-quotes__quote a,
+.bc-quotes__publication a {
+  color: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bc-quotes__item {
+    transition: none;
+  }
+}
