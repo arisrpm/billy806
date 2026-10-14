@@ -263,3 +263,42 @@
     transition: none;
   }
 }
+
+/* ------------------------------------------------------------------ *
+ * Responsive trim
+ * ------------------------------------------------------------------ */
+
+@media (max-width: 1130px) {
+  .bc-header {
+    padding: 10px 1.25rem;
+  }
+
+  .bc-header__tickets {
+    font-size: 18px;
+    padding: 0 1rem;
+  }
+}
+
+@media (max-width: 910px) {
+  .bc-header__menu {
+    width: 45px;
+  }
+
+  .bc-header__tickets {
+    font-size: 14px;
+    padding: 0 1rem;
+  }
+}
+
+@media (max-width: 767px) {
+  /* NOTE: this drops the ticket button below the 44px minimum tap target —
+     min-height: auto plus 10px padding lands it around 32px. It is the
+     primary call to action on the smallest screens, where tap accuracy
+     matters most. Raise min-height if that becomes a problem. */
+  .bc-header__tickets {
+    font-size: 12px;
+    padding: 10px 8px;
+    line-height: 1;
+    min-height: auto;
+  }
+}

@@ -314,3 +314,15 @@ img.dev-calendar-bg-bottom {
     margin: 0 auto;
   }
 }
+
+/* Squarespace-generated section classes. These are regenerated if the section
+   is rebuilt in the editor, so they will need re-copying if the topper or the
+   main content block is recreated. */
+@media (max-width: 767px) {
+  #bc-topper .fe-6ace81889030e9633ced409f,
+  #main-content .fe-6ace81899030e9633ced40a7 {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+  }
+}
