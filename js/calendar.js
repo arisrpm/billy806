@@ -1,27 +1,32 @@
 /**
- * BC Calendar — month grid of performances, each linking to Telecharge.
+ * BC Calendar Extension
  *
- * Reads the Calendar tab through BC core, so it shares the one batched Sheets
- * request with every other module rather than fetching on its own — including
- * when the visitor pages between months, which costs no network at all.
+ * Separate calendar for Billy Crystal 860 extension performances.
  *
- * The sheet holds every date in the run, dark days included. A date only
- * becomes a performance when it has a time, so empty time cells simply render
- * as a dark day.
+ * Google Sheets:
+ *   Calendar Extension
+ *
+ * HTML:
+ *   #bc-calendar-extension
+ *
+ * Uses BC Core for Google Sheets data.
+ *
+ * Does not affect the original Calendar module.
  */
+
 (() => {
   'use strict';
 
-  const MODULE = '[BC Calendar]';
-  const SELECTOR = '#bc-calendar';
-  const TAB = 'Calendar';
+  const MODULE = '[BC Calendar Extension]';
+
+  const SELECTOR = '#bc-calendar-extension';
+
+  const TAB = 'Calendar Extension';
 
   const CONFIG = {
-    // Lowercase "tickets" to match the URL the ticketing team supplied exactly.
+
     baseUrl: 'https://www.telecharge.com/Billy-Crystal-860-tickets',
 
-    // Supplied by the ticketing team. Emitted as both AID and utm_id — if this
-    // is ever blanked, both are omitted rather than sent empty.
     aid: 'BWY001492800',
 
     utm: {
@@ -30,33 +35,39 @@
       utm_medium: 'web',
     },
 
-    // Fallback month, used only when the sheet has no performances at all.
-    startYear: 2026,
-    startMonth: 9, // 0-based: October
+    // Fallback if no extension performances exist.
+    // Update when the extension dates are finalized.
+    startYear: 2027,
+    startMonth: 0,
 
-    // Show the legend whenever ANY month in the sheet has a Best Available
-    // ticked. Set true to narrow it to only the month currently on screen.
     legendPerMonth: false,
 
-    legendText: 'Click on the date and time below for tickets.',
-    legendBestAvailableText: ' Best Availability =',
+    legendText:
+      'Click on the date and time below for tickets.',
 
-    // Below this width the month grid is replaced by a vertical list of dates.
-    // Set to '' to keep the grid at every size (it tightens up under 900px).
+    legendBestAvailableText:
+      ' Best Availability =',
+
     listBelow: '(max-width: 680px)',
 
-    // Pad every month out to six rows. Keeps the block exactly the same height
-    // month to month, at the cost of a trailing empty row in most months.
     fixedSixRows: false,
   };
 
   const MONTH_NAMES = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December',
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
   ];
 
-  // Both forms ship in the markup and CSS picks one, so the switch happens on
-  // resize with no listener and no re-render.
   const WEEKDAYS = [
     { full: 'Sunday', short: 'Sun' },
     { full: 'Monday', short: 'Mon' },
@@ -77,266 +88,625 @@
   let index = 0;
   let bound = false;
 
-  /* ------------------------------------------------------------------ *
-   * Data
-   * ------------------------------------------------------------------ */
+  /* ============================================================
+     HELPERS
+     ============================================================ */
 
-  const pad = value => String(value).padStart(2, '0');
+  const pad = value =>
+    String(value).padStart(2, '0');
 
-  const monthKey = (year, month) => `${year}-${pad(month + 1)}`;
+  const monthKey = (year, month) =>
+    `${year}-${pad(month + 1)}`;
 
-  const dateKey = (year, month, day) => `${year}-${pad(month + 1)}-${pad(day)}`;
+  const dateKey = (year, month, day) =>
+    `${year}-${pad(month + 1)}-${pad(day)}`;
 
   const todayKey = () => {
     const now = new Date();
-    return dateKey(now.getFullYear(), now.getMonth(), now.getDate());
+
+    return dateKey(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate()
+    );
   };
 
-  /** The sheet's DATE column arrives formatted, e.g. "10/01/2026". */
   const toKey = value => {
-    const [month, day, year] = String(value || '').split('/');
-    if (!month || !day || !year) return '';
+
+    const [month, day, year] =
+      String(value || '').split('/');
+
+    if (!month || !day || !year) {
+      return '';
+    }
+
     return `${year}-${pad(month)}-${pad(day)}`;
   };
 
-  const addPerformance = (list, time, flag, type) => {
-    const label = String(time || '').trim();
-    if (!label) return;
+  /* ============================================================
+     PERFORMANCE DATA
+     ============================================================ */
+
+  const addPerformance = (
+    list,
+    time,
+    flag,
+    type
+  ) => {
+
+    const label =
+      String(time || '').trim();
+
+    if (!label) {
+      return;
+    }
 
     list.push({
+
       label,
-      // Telecharge wants the time with no space: "7:00PM".
-      urlTime: label.replace(/\s+/g, ''),
-      bestAvailable: BC.bool(flag),
+
+      urlTime:
+        label.replace(/\s+/g, ''),
+
+      bestAvailable:
+        BC.bool(flag),
+
       type,
     });
   };
 
   const buildEventMap = rows => {
+
     const map = {};
 
     rows.forEach(row => {
-      const key = toKey(row.date);
-      if (!key) return;
+
+      const key =
+        toKey(row.date);
+
+      if (!key) {
+        return;
+      }
 
       const list = [];
-      addPerformance(list, row.matineeTime, row.matBestAvailable, 'matinee');
-      addPerformance(list, row.eveningTime, row.eveBestAvailable, 'evening');
 
-      // Days without a time are dark days; they need no entry.
-      if (list.length) map[key] = list;
+      addPerformance(
+        list,
+        row.matineeTime,
+        row.matBestAvailable,
+        'matinee'
+      );
+
+      addPerformance(
+        list,
+        row.eveningTime,
+        row.eveBestAvailable,
+        'evening'
+      );
+
+      if (list.length) {
+        map[key] = list;
+      }
+
     });
 
     return map;
   };
 
-  const collectMonths = () =>
-    [...new Set(Object.keys(eventsByDate).map(key => key.slice(0, 7)))].sort();
+  const collectMonths = () => {
 
-  /** Open on the current month if the run covers it, otherwise the next one. */
+    return [
+      ...new Set(
+        Object.keys(eventsByDate)
+          .map(key => key.slice(0, 7))
+      )
+    ].sort();
+
+  };
+
+  /* ============================================================
+     MONTH NAVIGATION
+     ============================================================ */
+
   const startingIndex = () => {
-    if (!months.length) return 0;
+
+    if (!months.length) {
+      return 0;
+    }
 
     const now = new Date();
-    const found = months.findIndex(key => key >= monthKey(now.getFullYear(), now.getMonth()));
 
-    return found === -1 ? months.length - 1 : found;
+    const currentMonth =
+      monthKey(
+        now.getFullYear(),
+        now.getMonth()
+      );
+
+    const found =
+      months.findIndex(
+        key => key >= currentMonth
+      );
+
+    return found === -1
+      ? months.length - 1
+      : found;
   };
 
   const visibleMonth = () => {
+
     if (!months.length) {
-      return { year: CONFIG.startYear, month: CONFIG.startMonth };
+
+      return {
+        year: CONFIG.startYear,
+        month: CONFIG.startMonth,
+      };
+
     }
 
-    const [year, month] = months[index].split('-');
-    return { year: Number(year), month: Number(month) - 1 };
+    const [year, month] =
+      months[index].split('-');
+
+    return {
+      year: Number(year),
+      month: Number(month) - 1,
+    };
   };
 
-  /* ------------------------------------------------------------------ *
-   * Links
-   * ------------------------------------------------------------------ */
+  /* ============================================================
+     TICKET LINKS
+     ============================================================ */
 
-  /**
-   * Built by hand rather than with URLSearchParams: Telecharge expects the
-   * literal slashes and colon inside PerformanceDateTime, and URLSearchParams
-   * would percent-encode them into %2F and %3A.
-   */
-  const ticketUrl = (key, performance) => {
-    const [year, month, day] = key.split('-');
-    const params = [`PerformanceDateTime=${month}/${day}/${year}%20${performance.urlTime}`];
+  const ticketUrl = (
+    key,
+    performance
+  ) => {
 
-    if (CONFIG.aid) params.push(`AID=${CONFIG.aid}`);
+    const [year, month, day] =
+      key.split('-');
 
-    Object.entries(CONFIG.utm).forEach(([name, value]) => {
-      if (value) params.push(`${name}=${value}`);
-    });
+    const params = [
 
-    if (CONFIG.aid) params.push(`utm_id=${CONFIG.aid}`);
+      `PerformanceDateTime=${month}/${day}/${year}%20${performance.urlTime}`
+
+    ];
+
+    if (CONFIG.aid) {
+
+      params.push(
+        `AID=${CONFIG.aid}`
+      );
+
+    }
+
+    Object.entries(CONFIG.utm)
+      .forEach(([name, value]) => {
+
+        if (value) {
+
+          params.push(
+            `${name}=${value}`
+          );
+
+        }
+
+      });
+
+    if (CONFIG.aid) {
+
+      params.push(
+        `utm_id=${CONFIG.aid}`
+      );
+
+    }
 
     return `${CONFIG.baseUrl}?${params.join('&')}`;
   };
 
   const longDate = key => {
-    const [year, month, day] = key.split('-').map(Number);
-    return new Date(year, month - 1, day).toLocaleDateString('en-US', {
-      weekday: 'long',
-      month: 'long',
-      day: 'numeric',
-      year: 'numeric',
-    });
+
+    const [year, month, day] =
+      key.split('-').map(Number);
+
+    return new Date(
+      year,
+      month - 1,
+      day
+    ).toLocaleDateString(
+      'en-US',
+      {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+      }
+    );
   };
 
-  /* ------------------------------------------------------------------ *
-   * Rendering
-   * ------------------------------------------------------------------ */
+  /* ============================================================
+     PERFORMANCE HTML
+     ============================================================ */
 
-  const performanceHtml = (key, performance) => `
-    <li class="bc-calendar__performance${performance.bestAvailable ? ' is-best-available' : ''}">
+  const performanceHtml = (
+    key,
+    performance
+  ) => `
+
+    <li class="bc-calendar__performance${
+      performance.bestAvailable
+        ? ' is-best-available'
+        : ''
+    }">
+
       <a
         class="bc-calendar__link"
         href="${BC.esc(ticketUrl(key, performance))}"
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Buy tickets, ${BC.esc(longDate(key))} at ${BC.esc(performance.label)}"
-      >${BC.esc(performance.label)}</a>
+      >
+        ${BC.esc(performance.label)}
+      </a>
+
     </li>
+
   `;
 
-  const dayHtml = (key, day, todayKey) => {
-    const performances = eventsByDate[key] || [];
+  /* ============================================================
+     DAY HTML
+     ============================================================ */
 
-    const classes = ['bc-calendar__day'];
-    if (!performances.length) classes.push('is-dark');
-    if (key < todayKey) classes.push('is-past');
-    if (key === todayKey) classes.push('is-today');
+  const dayHtml = (
+    key,
+    day,
+    today
+  ) => {
+
+    const performances =
+      eventsByDate[key] || [];
+
+    const classes = [
+      'bc-calendar__day'
+    ];
+
+    if (!performances.length) {
+      classes.push('is-dark');
+    }
+
+    if (key < today) {
+      classes.push('is-past');
+    }
+
+    if (key === today) {
+      classes.push('is-today');
+    }
 
     return `
+
       <div class="${classes.join(' ')}">
-        <time class="bc-calendar__date" datetime="${key}">${day}</time>
+
+        <time
+          class="bc-calendar__date"
+          datetime="${key}"
+        >
+          ${day}
+        </time>
+
         ${
           performances.length
-            ? `<ul class="bc-calendar__times">
-                 ${performances.map(p => performanceHtml(key, p)).join('')}
-               </ul>`
+            ? `
+              <ul class="bc-calendar__times">
+
+                ${
+                  performances
+                    .map(p =>
+                      performanceHtml(key, p)
+                    )
+                    .join('')
+                }
+
+              </ul>
+            `
             : ''
         }
+
       </div>
+
     `;
   };
 
-  const gridHtml = (year, month) => {
-    const today = todayKey();
-    const firstWeekday = new Date(year, month, 1).getDay();
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
+  /* ============================================================
+     DESKTOP GRID
+     ============================================================ */
 
-    const cells = WEEKDAYS.map(
-      day => `
-        <div class="bc-calendar__weekday" aria-hidden="true">
-          <span class="bc-calendar__weekday-full">${day.full}</span>
-          <span class="bc-calendar__weekday-short">${day.short}</span>
+  const gridHtml = (
+    year,
+    month
+  ) => {
+
+    const today =
+      todayKey();
+
+    const firstWeekday =
+      new Date(
+        year,
+        month,
+        1
+      ).getDay();
+
+    const daysInMonth =
+      new Date(
+        year,
+        month + 1,
+        0
+      ).getDate();
+
+    const cells =
+      WEEKDAYS.map(day => `
+
+        <div
+          class="bc-calendar__weekday"
+          aria-hidden="true"
+        >
+
+          <span class="bc-calendar__weekday-full">
+            ${day.full}
+          </span>
+
+          <span class="bc-calendar__weekday-short">
+            ${day.short}
+          </span>
+
         </div>
-      `
-    );
+
+      `);
 
     const days = [];
 
-    for (let i = 0; i < firstWeekday; i += 1) {
-      days.push('<div class="bc-calendar__day is-empty"></div>');
+    for (
+      let i = 0;
+      i < firstWeekday;
+      i += 1
+    ) {
+
+      days.push(
+        '<div class="bc-calendar__day is-empty"></div>'
+      );
+
     }
 
-    for (let day = 1; day <= daysInMonth; day += 1) {
-      days.push(dayHtml(dateKey(year, month, day), day, today));
+    for (
+      let day = 1;
+      day <= daysInMonth;
+      day += 1
+    ) {
+
+      days.push(
+
+        dayHtml(
+          dateKey(year, month, day),
+          day,
+          today
+        )
+
+      );
+
     }
 
-    // Pad to whole weeks only. Padding every month to six rows leaves a dead
-    // empty row in most of them — October needs exactly five. Counting day
-    // cells rather than children keeps the weekday headers out of the maths.
-    const target = CONFIG.fixedSixRows
-      ? SIX_ROWS
-      : Math.ceil(days.length / WEEK) * WEEK;
+    const target =
+      CONFIG.fixedSixRows
+        ? SIX_ROWS
+        : Math.ceil(
+            days.length / WEEK
+          ) * WEEK;
 
-    while (days.length < target) {
-      days.push('<div class="bc-calendar__day is-empty"></div>');
+    while (
+      days.length < target
+    ) {
+
+      days.push(
+        '<div class="bc-calendar__day is-empty"></div>'
+      );
+
     }
 
-    return cells.concat(days).join('');
+    return cells
+      .concat(days)
+      .join('');
   };
 
-  /**
-   * Mobile view. A seven-column grid at 375px gives roughly 50px columns —
-   * too narrow for "7:00 PM" at a legible size, and shrinking it turns every
-   * showtime into a sub-44px tap target. Listing the dates instead keeps the
-   * links full width and, unlike a date-only grid, still lets a day carry both
-   * its matinee and its evening as separate links.
-   *
-   * Reuses performanceHtml, so the links, tracking and Best Available marker
-   * are the same objects the grid renders.
-   */
-  const listHtml = (year, month) => {
-    const prefix = monthKey(year, month);
-    const today = todayKey();
+  /* ============================================================
+     MOBILE LIST
+     ============================================================ */
 
-    const keys = Object.keys(eventsByDate)
-      .filter(key => key.startsWith(prefix))
-      .sort();
+  const listHtml = (
+    year,
+    month
+  ) => {
+
+    const prefix =
+      monthKey(year, month);
+
+    const today =
+      todayKey();
+
+    const keys =
+      Object.keys(eventsByDate)
+        .filter(key =>
+          key.startsWith(prefix)
+        )
+        .sort();
 
     if (!keys.length) {
-      return '<p class="bc-calendar__empty">No performances this month.</p>';
-    }
-
-    const rows = keys.map(key => {
-      const [year_, month_, day_] = key.split('-').map(Number);
-      const date = new Date(year_, month_ - 1, day_);
 
       return `
-        <li class="bc-calendar__list-day${key < today ? ' is-past' : ''}">
-          <div class="bc-calendar__list-date">
-            <span class="bc-calendar__list-weekday">
-              ${date.toLocaleDateString('en-US', { weekday: 'short' })}
-            </span>
-            <time datetime="${key}">
-              ${date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-            </time>
-          </div>
-
-          <ul class="bc-calendar__times">
-            ${eventsByDate[key].map(p => performanceHtml(key, p)).join('')}
-          </ul>
-        </li>
+        <p class="bc-calendar__empty">
+          No performances this month.
+        </p>
       `;
-    });
 
-    return `<ol class="bc-calendar__list">${rows.join('')}</ol>`;
+    }
+
+    const rows =
+      keys.map(key => {
+
+        const [
+          year_,
+          month_,
+          day_
+        ] = key
+          .split('-')
+          .map(Number);
+
+        const date =
+          new Date(
+            year_,
+            month_ - 1,
+            day_
+          );
+
+        return `
+
+          <li class="bc-calendar__list-day${
+            key < today
+              ? ' is-past'
+              : ''
+          }">
+
+            <div class="bc-calendar__list-date">
+
+              <span class="bc-calendar__list-weekday">
+
+                ${
+                  date.toLocaleDateString(
+                    'en-US',
+                    {
+                      weekday: 'short'
+                    }
+                  )
+                }
+
+              </span>
+
+              <time datetime="${key}">
+
+                ${
+                  date.toLocaleDateString(
+                    'en-US',
+                    {
+                      month: 'short',
+                      day: 'numeric'
+                    }
+                  )
+                }
+
+              </time>
+
+            </div>
+
+            <ul class="bc-calendar__times">
+
+              ${
+                eventsByDate[key]
+                  .map(p =>
+                    performanceHtml(key, p)
+                  )
+                  .join('')
+              }
+
+            </ul>
+
+          </li>
+
+        `;
+
+      });
+
+    return `
+
+      <ol class="bc-calendar__list">
+        ${rows.join('')}
+      </ol>
+
+    `;
   };
 
-  const useList = () => Boolean(CONFIG.listBelow) && Boolean(media && media.matches);
+  /* ============================================================
+     LEGEND
+     ============================================================ */
 
-  const monthHasBestAvailable = (year, month) => {
-    const prefix = monthKey(year, month);
+  const useList = () =>
+    Boolean(CONFIG.listBelow) &&
+    Boolean(
+      media &&
+      media.matches
+    );
 
-    return Object.entries(eventsByDate).some(
-      ([key, list]) => key.startsWith(prefix) && list.some(p => p.bestAvailable)
+  const monthHasBestAvailable = (
+    year,
+    month
+  ) => {
+
+    const prefix =
+      monthKey(year, month);
+
+    return Object
+      .entries(eventsByDate)
+      .some(([key, list]) =>
+
+        key.startsWith(prefix) &&
+        list.some(
+          p => p.bestAvailable
+        )
+
+      );
+  };
+
+  const showLegend = (
+    year,
+    month
+  ) => {
+
+    if (!CONFIG.legendPerMonth) {
+
+      return Object
+        .values(eventsByDate)
+        .some(list =>
+          list.some(
+            p => p.bestAvailable
+          )
+        );
+
+    }
+
+    return monthHasBestAvailable(
+      year,
+      month
     );
   };
 
-  const showLegend = (year, month) => {
-    if (!CONFIG.legendPerMonth) {
-      return Object.values(eventsByDate).some(list => list.some(p => p.bestAvailable));
-    }
-
-    return monthHasBestAvailable(year, month);
-  };
+  /* ============================================================
+     RENDER
+     ============================================================ */
 
   const render = () => {
-    const { year, month } = visibleMonth();
 
-    const hasPrev = index > 0;
-    const hasNext = index < months.length - 1;
+    const {
+      year,
+      month
+    } = visibleMonth();
+
+    const hasPrev =
+      index > 0;
+
+    const hasNext =
+      index < months.length - 1;
 
     root.innerHTML = `
+
       <div class="bc-calendar">
 
         <div class="bc-calendar__nav">
+
           <button
             class="bc-calendar__prev"
             type="button"
@@ -344,7 +714,10 @@
             ${hasPrev ? '' : 'disabled'}
           ></button>
 
-          <h2 class="bc-calendar__month" aria-live="polite">
+          <h2
+            class="bc-calendar__month"
+            aria-live="polite"
+          >
             ${MONTH_NAMES[month]}
           </h2>
 
@@ -354,99 +727,254 @@
             aria-label="Next month"
             ${hasNext ? '' : 'disabled'}
           ></button>
+
         </div>
 
-        <p class="bc-calendar__legend"${showLegend(year, month) ? '' : ' hidden'}>
+        <p
+          class="bc-calendar__legend"
+          ${showLegend(year, month) ? '' : 'hidden'}
+        >
+
           ${BC.esc(CONFIG.legendText)}
-          ${CONFIG.legendBestAvailableText ? `<br>${BC.esc(CONFIG.legendBestAvailableText)}` : ''}
-          <span class="bc-calendar__swatch" aria-hidden="true"></span>
-          <span class="bc-calendar__sr">highlighted showtimes</span>
+
+          ${
+            CONFIG.legendBestAvailableText
+              ? `<br>${BC.esc(CONFIG.legendBestAvailableText)}`
+              : ''
+          }
+
+          <span
+            class="bc-calendar__swatch"
+            aria-hidden="true"
+          ></span>
+
+          <span class="bc-calendar__sr">
+            highlighted showtimes
+          </span>
+
         </p>
 
         ${
           useList()
             ? listHtml(year, month)
-            : `<div class="bc-calendar__grid">${gridHtml(year, month)}</div>`
+            : `
+              <div class="bc-calendar__grid">
+
+                ${
+                  gridHtml(
+                    year,
+                    month
+                  )
+                }
+
+              </div>
+            `
         }
 
       </div>
+
     `;
   };
 
-  /* ------------------------------------------------------------------ *
-   * Interaction
-   * ------------------------------------------------------------------ */
+  /* ============================================================
+     NAVIGATION
+     ============================================================ */
 
-  const go = (step, selector) => {
-    const next = index + step;
-    if (next < 0 || next > months.length - 1) return;
+  const go = (
+    step,
+    selector
+  ) => {
+
+    const next =
+      index + step;
+
+    if (
+      next < 0 ||
+      next > months.length - 1
+    ) {
+      return;
+    }
 
     index = next;
+
     render();
 
-    // The button was just replaced by the re-render. Put focus back on it so a
-    // keyboard user can keep paging; fall back to the heading at either end.
-    const button = root.querySelector(selector);
+    const button =
+      root.querySelector(selector);
 
-    if (button && !button.disabled) {
+    if (
+      button &&
+      !button.disabled
+    ) {
+
       button.focus();
+
     } else {
-      root.querySelector('.bc-calendar__month')?.focus?.();
+
+      root
+        .querySelector(
+          '.bc-calendar__month'
+        )
+        ?.focus?.();
+
     }
   };
 
   const bindEvents = () => {
-    if (bound) return;
+
+    if (bound) {
+      return;
+    }
+
     bound = true;
 
-    // Delegated, so the listener survives every re-render.
-    root.addEventListener('click', event => {
-      if (event.target.closest('.bc-calendar__prev')) go(-1, '.bc-calendar__prev');
-      if (event.target.closest('.bc-calendar__next')) go(1, '.bc-calendar__next');
-    });
+    root.addEventListener(
+      'click',
+      event => {
+
+        if (
+          event.target.closest(
+            '.bc-calendar__prev'
+          )
+        ) {
+
+          go(
+            -1,
+            '.bc-calendar__prev'
+          );
+
+        }
+
+        if (
+          event.target.closest(
+            '.bc-calendar__next'
+          )
+        ) {
+
+          go(
+            1,
+            '.bc-calendar__next'
+          );
+
+        }
+
+      }
+    );
   };
 
-  /* ------------------------------------------------------------------ *
-   * Init
-   * ------------------------------------------------------------------ */
+  /* ============================================================
+     INITIALIZATION
+     ============================================================ */
 
   const init = async () => {
-    root = document.querySelector(SELECTOR);
 
-    if (!root || !window.BC) return;
+    root =
+      document.querySelector(
+        SELECTOR
+      );
 
-    root.setAttribute('aria-busy', 'true');
+    if (
+      !root ||
+      !window.BC
+    ) {
+      return;
+    }
+
+    root.setAttribute(
+      'aria-busy',
+      'true'
+    );
 
     try {
-      const rows = await BC.getSheet(TAB);
 
-      eventsByDate = buildEventMap(rows);
-      months = collectMonths();
-      index = startingIndex();
+      const rows =
+        await BC.getSheet(TAB);
 
-      if (!months.length && BC.config.debug) {
+      eventsByDate =
+        buildEventMap(rows);
+
+      months =
+        collectMonths();
+
+      index =
+        startingIndex();
+
+      if (
+        !months.length &&
+        BC.config.debug
+      ) {
+
         console.warn(
-          `${MODULE} No performance times in the ${TAB} tab yet — showing ` +
-            `${MONTH_NAMES[CONFIG.startMonth]} ${CONFIG.startYear} as an empty month.`
+          `${MODULE} No extension performances found.`
         );
+
       }
 
-      if (CONFIG.listBelow && !media) {
-        media = window.matchMedia(CONFIG.listBelow);
-        // Re-render on the way across the breakpoint, in both directions.
-        media.addEventListener('change', render);
+      if (
+        CONFIG.listBelow &&
+        !media
+      ) {
+
+        media =
+          window.matchMedia(
+            CONFIG.listBelow
+          );
+
+        media.addEventListener(
+          'change',
+          render
+        );
+
       }
 
       render();
+
       bindEvents();
+
+      if (
+        BC.config.debug
+      ) {
+
+        console.log(
+          `${MODULE} Initialized`,
+          {
+            tab: TAB,
+            months: months.length,
+            performances:
+              Object.keys(eventsByDate).length
+          }
+        );
+
+      }
+
     } catch (error) {
-      console.error(`${MODULE} Unable to load the calendar.`, error);
+
+      console.error(
+        `${MODULE} Unable to load extension calendar.`,
+        error
+      );
+
       root.hidden = true;
+
     } finally {
-      root.removeAttribute('aria-busy');
-      root.classList.remove('is-loading');
+
+      root.removeAttribute(
+        'aria-busy'
+      );
+
+      root.classList.remove(
+        'is-loading'
+      );
+
     }
   };
 
-  window.BCCalendar = { init };
+  /* ============================================================
+     PUBLIC API
+     ============================================================ */
+
+  window.BCCalendarExtension = {
+    init
+  };
+
 })();
