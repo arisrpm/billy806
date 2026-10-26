@@ -13,7 +13,7 @@
   const MODULE = '[BC]';
 
   // Global names, not bare identifiers — see start() below.
-  const MODULES = ['BCHeader', 'BCCalendar', 'BCCreative', 'BCQuotes', 'BCFAQ'];
+  const MODULES = ['BCHeader', 'BCCalendar',  'BCCalendarExtension', 'BCCreative', 'BCQuotes', 'BCFAQ'];
 
   /**
    * Look modules up on `window` rather than referencing them directly.

@@ -41,11 +41,12 @@
     // Tab name -> only the columns that tab actually uses. Keep these tight;
     // A:Z fetches 26 columns to use five.
     ranges: {
-      Header: 'A:D',
-      Calendar: 'A:E',
-      FAQs: 'A:B',
-      Creative: 'A:D',
-      Quotes: 'A:B',
+        Header: 'A:D',
+        Calendar: 'A:E',
+        'Calendar Extension': 'A:E',
+        FAQs: 'A:B',
+        Creative: 'A:D',
+        Quotes: 'A:B'
     },
 
     // Set false before pinning the launch commit.
