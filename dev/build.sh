@@ -19,7 +19,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 CSS_FILES=(css/main.css css/header.css css/notices.css css/calendar.css css/creative.css css/quotes.css css/faq.css)
-JS_FILES=(js/core.js js/header.js js/calendar.js js/creative.js js/quotes.js js/faq.js js/main.js)
+JS_FILES=(js/core.js js/header.js js/calendar.js js/calendar-extension.js js/creative.js js/quotes.js js/faq.js js/main.js)
 
 build() {
   mkdir -p dist
