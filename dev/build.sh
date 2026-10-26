@@ -155,7 +155,7 @@ verify() {
     grep -q "$sel" dist/bc.min.css || { echo "BUILD FAILED: no '$sel' rules in bc.min.css" >&2; bad=1; }
   done
 
-  for name in BCHeader BCCalendar BCCreative BCQuotes BCFAQ; do
+  for name in BCHeader BCCalendar BCCalendarExtension BCCreative BCQuotes BCFAQ; do
     grep -q "window.$name=" dist/bc.min.js || { echo "BUILD FAILED: $name missing from bc.min.js" >&2; bad=1; }
   done
 
